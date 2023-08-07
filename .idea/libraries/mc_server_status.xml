@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="mc-server-status">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../All Dependencies/Direct Jar/mc-server-status.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
