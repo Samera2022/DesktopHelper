@@ -1,10 +1,8 @@
 package priv.samera2022.module;
 
-import priv.samera2022.JIMSendTextPane;
-
-import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.JTextComponent;
 import javax.swing.text.Style;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
@@ -27,15 +25,19 @@ public class DropTarget extends DropTargetAdapter {
 
     private DefaultStyledDocument dsd;
     private List<ByteBuffer> buflist = new ArrayList<>(); // 在内存中保存文件
-    private JTextPane jtp; // 显示文件内容区域
+//    private JTextPane jtp; // 显示文件内容区域
+//    private JTextArea jta;
+    private JTextComponent jtc;
 //    static {
 //        jtp.setDocument(dsd);
 //    }
     private int code;
-    public DropTarget(int code, DefaultStyledDocument dsd, JTextPane jtp) {
+    public DropTarget(int code, DefaultStyledDocument dsd, JTextComponent jtc) {
         this.code = code;
         this.dsd = dsd;
-        this.jtp = jtp;
+        this.jtc = jtc;
+//        this.jtp = jtp;
+//        this.jta = jta;
     }
 
     @Override
@@ -78,7 +80,7 @@ public class DropTarget extends DropTargetAdapter {
                                         case ".yml":
                                         case ".YML":
                                             if (t.contains(": ")) {
-                                                line(t, ": ", FontStyle.blueStyle, FontStyle.plainStyle);
+                                                line(t, ": ", FontStyle.yamlBlueStyle, FontStyle.plainStyle);
 //                                            dsd.insertString(dsd.getLength(), t.substring(0, t.indexOf(": ")), FontStyle.blueStyle);
 //                                            dsd.insertString(dsd.getLength(), t.substring(t.indexOf(": ")) + "\r\n", FontStyle.plainStyle);
                                             } else {
@@ -125,7 +127,9 @@ public class DropTarget extends DropTargetAdapter {
                                 }
                                 sc.close();
                                 isr.close();
-                                jtp.setDocument(dsd);
+                                jtc.setDocument(dsd);
+//                                if (jtp!=null&&jta==null) jtp.setDocument(dsd);
+//                                if (jtp==null&&jta!=null) jta.setDocument(dsd);
                             } else if (Info.picSuffix.contains(suffix)) {
 //                            ta.setImage(file);
                             }
@@ -147,7 +151,7 @@ public class DropTarget extends DropTargetAdapter {
         dsd.insertString(dsd.getLength(), string.substring(string.indexOf(target)) + "\r\n", plain);
     }
 
-    public JTextPane getJtp() {
-        return jtp;
-    }
+//    public JTextPane getJtp() {
+//        return jtp;
+//    }
 }

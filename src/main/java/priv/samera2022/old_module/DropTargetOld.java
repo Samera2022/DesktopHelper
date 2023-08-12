@@ -70,7 +70,7 @@ public class DropTargetOld {
                                     case ".yml":
                                     case ".YML":
                                         if (t.contains(": ")) {
-                                            line(t,": ",FontStyle.blueStyle,FontStyle.plainStyle);
+                                            line(t,": ",FontStyle.yamlBlueStyle,FontStyle.plainStyle);
 //                                            dsd.insertString(dsd.getLength(), t.substring(0, t.indexOf(": ")), FontStyle.blueStyle);
 //                                            dsd.insertString(dsd.getLength(), t.substring(t.indexOf(": ")) + "\r\n", FontStyle.plainStyle);
                                         } else {

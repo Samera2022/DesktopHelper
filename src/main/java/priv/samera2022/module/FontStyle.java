@@ -4,13 +4,22 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class FontStyle {
     public static final StyleContext sc = new StyleContext();
-    public static final Style blueStyle = sc.addStyle("BLUE", null);
-    public static final Style plainStyle = sc.addStyle("BLACK",null);
+    public static final Style plainStyle = sc.addStyle("PLAIN",null);
+    public static final Style yamlBlueStyle = sc.addStyle("BLUE", null);
+
+    public static final Style blackStyle = sc.addStyle("BLACK",null);
+    public static final Style blueStyle = sc.addStyle("BLUE",null);
     public static final Style yellowStyle = sc.addStyle("YELLOW",null);
     public static final Style darkRedStyle = sc.addStyle("RED",null);
+    public static final Style greyStyle = sc.addStyle("GREY",null);
+    public static final Style greenStyle = sc.addStyle("GREEN",null);
+
+    public static final Style[] colorStyles = new Style[]{blueStyle,yellowStyle,darkRedStyle,greyStyle,greenStyle,plainStyle};
+
     public static Style MDStyle = sc.addStyle("MD",null);
 //    public static final Style MDHeadingStyle_1 = sc.addStyle("HEADING_1",null);
 //    public static final Style MDHeadingStyle_2 = sc.addStyle("HEADING_2",null);
@@ -20,10 +29,16 @@ public class FontStyle {
 //    public static final Style MDHeadingStyle_6 = sc.addStyle("HEADING_6",null);
     static {
 
-        register(blueStyle,Color.BLUE,true, 14);
-        register(darkRedStyle,new Color(139,0,0),true,14);
         register(plainStyle,Color.BLACK,false,14);
+        register(yamlBlueStyle,Color.BLUE,true, 14);
+        
+        register(blueStyle,Color.BLUE,false,14);
+        register(blackStyle,Color.BLACK,false,14);
+        register(darkRedStyle,new Color(139,0,0),true,14);
         register(yellowStyle,Color.YELLOW,false,14);
+        register(greyStyle,Color.GRAY,false,14);
+        register(greenStyle,Color.GREEN,false,14);
+
         register(MDStyle,Color.BLACK,true,14);
 
 //        register(MDHeadingStyle_1,Color.BLACK,true,28);

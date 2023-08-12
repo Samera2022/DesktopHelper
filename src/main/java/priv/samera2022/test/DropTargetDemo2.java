@@ -1,4 +1,4 @@
-package priv.samera2022;
+package priv.samera2022.test;
 
 import javax.swing.*;
 import java.awt.*;
