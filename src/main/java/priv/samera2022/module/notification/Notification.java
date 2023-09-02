@@ -20,6 +20,10 @@ public class Notification {
         return isFinished;
     }
 
+    public void setFinished(boolean finished) {
+        isFinished = finished;
+    }
+
     public String getStartDate() {
         return startDate;
     }

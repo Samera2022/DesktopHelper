@@ -12,7 +12,7 @@ public class NotificationContent {
     public NotificationContent(String content){
         this.content = content;
     }
-    @Deprecated
+
     public void append(DefaultStyledDocument dsd,int index) throws BadLocationException {
         String copy = content;
         int colorHead = copy.indexOf("[");

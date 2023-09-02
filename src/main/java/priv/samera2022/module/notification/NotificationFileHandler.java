@@ -15,11 +15,11 @@ public class NotificationFileHandler {
 
     public static void append(String content){
         String inContent = FileHandler.read(FileHandler.FOLDER_PATH+FileHandler.NOTIFICATION_NAME);
-        System.out.println("inContent: "+inContent);
+//        System.out.println("inContent: "+inContent);
         String enter = inContent.length()!=0?"\n":"";
-        System.out.println("preOutput: "+inContent+enter+content);
-        FileHandler.write(inContent+enter+content,FileHandler.FOLDER_PATH+FileHandler.NOTIFICATION_NAME);
-    }
+//        System.out.println("preOutput: "+inContent+enter+content);
+        FileHandler.write(FileHandler.FOLDER_PATH+FileHandler.NOTIFICATION_NAME,inContent+enter+content);
+    }//警示！在append的时候已经自动检测是否是第一行，若非第一行则执行换行操作。
 
     public static ArrayList<Notification> read(){
         ArrayList<Notification> notifications = new ArrayList<>();

@@ -1,12 +1,14 @@
 package priv.samera2022.test;
 
 import priv.samera2022.module.FontStyle;
+import priv.samera2022.module.mainFrame;
 import priv.samera2022.module.notification.NotificationContent;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Style;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -14,7 +16,38 @@ public class test {
     private static String content = "Hello![RED]That's good![BLUE]GOOD!";
     public static void main(String[]args) throws BadLocationException {
 //        append();
-        test6();
+//        Method method = mainFrame.class.ge;
+
+//        String target = "114514";
+//        ArrayList<String> list = new ArrayList<>(Arrays.asList("11451451", "11315123", "91232342", "37293412", "114513", "115314"));
+//        System.out.println(test7(target,list));
+//        for (String element: list) {
+//            System.out.println(element);
+//        }
+    }
+    public static String test7(String target, ArrayList<String> list){
+        String output = "";
+        for (int i = 0; i<target.length(); i++){
+            //i是第几位
+            if (list.size()!=1) {
+                for (int j = 0; j < list.size(); j++) {
+                    String element = list.get(j);
+                    if (element.charAt(i) != target.charAt(i) && list.size()!=1) {
+                        list.remove(element);
+                        j--;
+                    } else {
+                        output = list.get(0);
+                        break;
+                    }
+                }
+            }
+            else {
+                //这段代码究竟有没有可能会运行？
+                output = list.get(0);
+                break;
+            }
+        }
+        return output;
     }
     public static void test6(){
         String output = "1`4514\n";
@@ -33,14 +66,18 @@ public class test {
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     public static void test4(){
-        ArrayList arr = new ArrayList<>();
+        ArrayList<Integer> arr = new ArrayList<>();
         arr.add(1);
         arr.add(2);
         arr.add(3);
         arr.add(4);
         arr.add(5);
-        arr.add(3,"test");
-        System.out.println(arr.get(3));
+//        arr.add(3,"test");
+        arr.remove(3);
+        for (int a : arr) {
+            System.out.println(a);
+        }
+//        System.out.println(arr.get(3));
     }
     public static void test3(){
         String content = "11111[][][][]1? 1";

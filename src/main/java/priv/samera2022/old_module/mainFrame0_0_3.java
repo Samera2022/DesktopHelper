@@ -1,7 +1,8 @@
-package priv.samera2022.module;
+package priv.samera2022.old_module;
 
 //import com.sun.jna.platform.FileUtils;
 
+import priv.samera2022.module.*;
 import priv.samera2022.module.gadgets.chemistry_quiz.ChemistryQuiz;
 import priv.samera2022.module.notification.Notification;
 import priv.samera2022.module.notification.NotificationContent;
@@ -22,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class mainFrame {
+public class mainFrame0_0_3 {
     private static boolean isCommand = false;//如果有人不符合所有的已知命令头的话，那就说明他不在输入命令呗
 
     public static void main(String[] args) throws BadLocationException {

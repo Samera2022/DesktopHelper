@@ -32,4 +32,23 @@ public class UpdateInfo {
             "详细指令使用参见notification help指令。\n" +
             " - [彩色系统] 应当注意的是，目前颜色仍是固定的，有 黑 蓝 黄 深红 灰 绿可选。" +
             "后续将考虑增加自定义颜色系统，可选颜色在FontStyle类中。彩色系统的支持范围为Notification栏目。\n";
+    private static final String version_0_0_3_1 =
+            " - [Released] - [0.0.3] - 2023-09-02 13:45\n" +
+            "## [Added]\n" +
+            " - 增加模糊匹配机制！简化指令输入的时间，现在你只需要大概打出指令前几个字母就可以调用！\n" +
+            " - 增加gadgets包（小工具包），可以向其中加入各种各样的小功能小工具！目前已加入ChemistryQuiz轨道表达式小测试！\n" +
+            "## [Descriptions]\n" +
+            " - 即将进行大规模底层逻辑重写，将会把该工程推送至v0.0.3.1分支保存!\n" +
+            " - 工程将会由Listener+switch的结构转为总线注册总线监听结构！\n";
+    private static final String warns =
+            "警示: " +
+            "-后续指令注册时，应在Info中向COMMANDS加入该指令以进行模糊匹配！" +
+            "假若该指令还有二级指令，则应效仿notification在二级switch前再进行一次模糊判定，且向Info中如NOTIFICATION_COMMANDS一样加入二级指令列表\n" +
+            "-messages的isCommand判断方法是无法同时输出多个时间的！即所有的messages里面的Mixture的输出共用一个标记时间。" +
+            "提示: " +
+            "-在各个Listener中，你其实有很多变量都是可以调用的。很多时候如果这个方法用这个变量不行，可以试试用另外一个方法调用另外一个变量来解决。" +
+            "比如说在模糊判断输出Couldn't find that command! Guess...的时候，用message会导致时间和内容吞并，但是用dsdFileContent附加时间就可以解决。";
+    public static void main(String[] args) {
+        System.out.println(version_0_0_3);
+    }
 }
