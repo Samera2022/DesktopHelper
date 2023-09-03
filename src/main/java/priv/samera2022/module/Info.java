@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Info {
-    public static final ArrayList<String> COMMANDS = new ArrayList<>();
     public static final ArrayList<String> NOTIFICATION_COMMANDS = new ArrayList<>();
 
     public static final ArrayList<String> picSuffix = new ArrayList<>();
@@ -17,7 +16,6 @@ public class Info {
     public static final ArrayList<String> darkRedCode = new ArrayList<>();
 
     static {
-        COMMANDS.addAll(Arrays.asList("usage","exit","print","clear","notification","ChemistryQuiz"));
         NOTIFICATION_COMMANDS.addAll(Arrays.asList("add","remove","unfinished","finished"));
 
         picSuffix.addAll(Arrays.asList(".png",".jpg",".jpeg"));

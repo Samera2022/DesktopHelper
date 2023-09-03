@@ -1,0 +1,101 @@
+package priv.samera2022.module.commands;
+
+import priv.samera2022.module.FontStyle;
+import priv.samera2022.module.Mixture;
+import priv.samera2022.module.annotation.Command;
+import priv.samera2022.module.commands.registry.CommandHeads;
+
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import static priv.samera2022.module.commands.registry.CommandHeads._timePrefix;
+import static priv.samera2022.module.mainFrame.dsdFileContent;
+
+public class CommandHandler {
+    private static final ArrayList<String> COMMAND_NAME = new ArrayList<>();
+    private static final HashMap<String, Method> NAME_COMMAND_MAP = new HashMap<>();
+
+    static {
+        Method[] methods = CommandHeads.class.getMethods();
+        for (Method method : methods) {
+            if (method.isAnnotationPresent(Command.class)) {
+                Command command = method.getAnnotation(Command.class);
+                String name = command.name();
+                COMMAND_NAME.add(name);
+                NAME_COMMAND_MAP.put(name, method);
+            }
+        }
+    }
+
+    public static void handleCommands(ArrayList<String> commands) {
+        try {
+            String head = commands.get(0);//指令头
+
+            String _string_switcher_1 = fuzzyMatch(head, COMMAND_NAME);//模糊匹配一下，看看是否能从COMMAND_NAME里面模糊匹配出一个
+            System.out.println(_string_switcher_1);
+            boolean _boolean_switcher_1 = _string_switcher_1.isEmpty();//如果没匹配出这个玩意就是true，匹配出就是false
+            System.out.println(_boolean_switcher_1);
+            String switcher_1 = _boolean_switcher_1 ? head:_string_switcher_1;//如果匹配出了就用匹配出来的，没匹配出就用原来的
+            System.out.println(switcher_1);
+            if (!_boolean_switcher_1 && !_string_switcher_1.equals(head)) {//如果匹配出来并且匹配出来的东西跟原来的不一样
+                //模糊匹配功能已启用！
+                _fuzzyMatchInfo(dsdFileContent,switcher_1);
+            }//模糊匹配+提示信息输出
+
+            Mixture<Boolean,ArrayList<String>> mixture = new Mixture<>(false,commands);
+            Method method = NAME_COMMAND_MAP.get(switcher_1);
+            if (method.isAnnotationPresent(Command.class)) {
+                Command command = method.getAnnotation(Command.class);
+                boolean delete = command.delete();
+                mixture.setKey(delete);
+            }
+            method.invoke(CommandHeads.class, mixture);//方法调用
+        } catch (IllegalAccessException | InvocationTargetException | BadLocationException e) {
+            //ignore it.
+        }
+    }
+
+    private static void _fuzzyMatchInfo(DefaultStyledDocument dsdFileContent, String command) throws BadLocationException {
+        _timePrefix(dsdFileContent);
+        dsdFileContent.insertString(dsdFileContent.getLength(), "\nCouldn't find that command! Guess you want to use command \"", FontStyle.blueStyle);
+        dsdFileContent.insertString(dsdFileContent.getLength(), command, FontStyle.darkRedStyle);
+        dsdFileContent.insertString(dsdFileContent.getLength(), "\"!", FontStyle.blueStyle);
+        dsdFileContent.insertString(dsdFileContent.getLength(), "\nExecuting Command \"", FontStyle.blueStyle);
+        dsdFileContent.insertString(dsdFileContent.getLength(), command, FontStyle.darkRedStyle);
+        dsdFileContent.insertString(dsdFileContent.getLength(), "\"!", FontStyle.blueStyle);
+    }
+
+    private static String fuzzyMatch(String target, ArrayList<String> list) {
+        String output = "";
+        for (int i = 0; i < target.length(); i++) {
+            //i是第几位
+            if (list.size() != 1) {
+                for (int j = 0; j < list.size(); j++) {
+                    String element = list.get(j);
+                    if (element.charAt(i) != target.charAt(i) && list.size() != 1) {
+                        list.remove(element);
+                        j--;
+                    } else {
+                        output = list.get(0);
+                        break;
+                    }
+                }
+            } else {
+                //这段代码究竟有没有可能会运行？
+                output = list.get(0);
+                break;
+            }
+        }
+        return output;
+    }
+
+    public static void main(String[] args) {
+        for (String name : COMMAND_NAME) {
+            System.out.println(name);
+        }
+    }
+}

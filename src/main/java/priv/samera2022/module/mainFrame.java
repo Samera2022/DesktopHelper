@@ -2,9 +2,8 @@ package priv.samera2022.module;
 
 //import com.sun.jna.platform.FileUtils;
 
-import priv.samera2022.module.gadgets.chemistry_quiz.ChemistryQuiz;
+import priv.samera2022.module.keylisteners.EnterKeyListener;
 import priv.samera2022.module.notification.Notification;
-import priv.samera2022.module.notification.NotificationContent;
 import priv.samera2022.module.notification.NotificationFileHandler;
 
 import javax.swing.*;
@@ -15,15 +14,16 @@ import java.awt.*;
 import java.awt.dnd.DnDConstants;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class mainFrame {
-    private static boolean isCommand = false;//如果有人不符合所有的已知命令头的话，那就说明他不在输入命令呗
+
+    public static DefaultStyledDocument dsdInput = new DefaultStyledDocument(FontStyle.sc);
+    public static DefaultStyledDocument dsdFileContent = new DefaultStyledDocument(FontStyle.sc);
+    public static DefaultStyledDocument dsdNotification = new DefaultStyledDocument(FontStyle.sc);
 
     public static void main(String[] args) throws BadLocationException {
         frame();
@@ -43,7 +43,6 @@ public class mainFrame {
         totalPanel.setLocation(x, 0);
 
         //<---INPUT_ANALYZE--->
-        DefaultStyledDocument dsdInput = new DefaultStyledDocument(FontStyle.sc);
         JTextArea jtaInput = new JTextArea(dsdInput); // 显示文件内容区域
         DropTarget dtsInput = new DropTarget(DropTarget.INPUT_ANALYZE, dsdInput, jtaInput);
         jtaInput.setEditable(true);
@@ -58,7 +57,6 @@ public class mainFrame {
         totalPanel.add(sp1);
 
         //<---FILE_CONTENT_ANALYZE--->
-        DefaultStyledDocument dsdFileContent = new DefaultStyledDocument(FontStyle.sc);
         JTextPane jtpFileContent = new JTextPane(dsdFileContent); // 显示文件内容区域
         DropTarget dtsFileContent = new DropTarget(DropTarget.FILE_CONTENT_ANALYZE, dsdFileContent, jtpFileContent);
         jtpFileContent.setEditable(false);
@@ -69,7 +67,6 @@ public class mainFrame {
         totalPanel.add(sp2);
 
         //<---Notification--->
-        DefaultStyledDocument dsdNotification = new DefaultStyledDocument(FontStyle.sc);
         JTextPane jtpNotification = new JTextPane(dsdNotification);
         if (NotificationFileHandler.notifications.size() != 0) {
             for (int i = 0; i < NotificationFileHandler.notifications.size(); i++) {
@@ -81,9 +78,6 @@ public class mainFrame {
                 }
                 notification.getContent().append(dsdNotification, dsdNotification.getLength());
                 dsdNotification.insertString(dsdNotification.getLength(), "\n", FontStyle.blackStyle);
-//                System.out.println("Notification.toString(): "+notification.toString());
-//                System.out.println("NotificationContent.contentToString(): "+notification.getContent().contentToString());
-//                if (i!=NotificationFileHandler.notifications.size()-1) dsdNotification.insertString(dsdNotification.getLength(),"\n",FontStyle.blackStyle);
             }
         }
         jtpNotification.setEditable(false);
@@ -93,269 +87,7 @@ public class mainFrame {
         totalPanel.add(sp3);
 
         //<---窗体尾--->
-        jtaInput.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                //ignore it.
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                //当键盘上的某个键(q w e r etc.)被按下时
-                try {
-                    System.out.println("keyPressed");
-                    String content = ((JTextArea) e.getSource()).getText();
-
-                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                        String[] contents = content.split(" ", 2);
-                        System.out.println(contents[0]);
-                        ArrayList<Mixture<String, Style>> messages = new ArrayList<>();
-                        String _string_switcher_1 = fuzzyMatch(contents[0], Info.COMMANDS);
-                        boolean _boolean_switcher_1 = _string_switcher_1.isEmpty();
-                        //判断_string_switcher是不是空的，空的意味着没找到这个指令
-                        String switcher_1 = _boolean_switcher_1 ? contents[0] : _string_switcher_1;
-                        System.out.println("switcher_1: " + switcher_1);
-                        if (!_boolean_switcher_1 && !_string_switcher_1.equals(contents[0])) {
-                            _fuzzyMatchInfo(dsdFileContent,switcher_1);
-                        }
-                        switch (switcher_1) {
-                            case "usage":
-                                isCommand = true;
-                                String targetCommand = contents[1];
-                                if (!targetCommand.contains(" ")) {
-                                    switch (targetCommand) {
-                                        case "print":
-                                            messages.add(new Mixture<>("Usage: print <content>\n", FontStyle.blackStyle));
-                                            messages.add(new Mixture<>("Description: Just to print some words.", FontStyle.blackStyle));
-                                            break;
-                                        case "clear":
-                                            messages.add(new Mixture<>("Usage: clear\n", FontStyle.blackStyle));
-                                            messages.add(new Mixture<>("Description: Clear all the history.", FontStyle.blackStyle));
-                                            break;
-//                                        case "del":
-//                                        case "delete":
-//                                            messages.add(new Mixture<>("Usage: del||delete",FontStyle.blackStyle));
-//                                            messages.add(new Mixture<>("Description: Delete a file or a folder.",FontStyle.blackStyle));
-//                                            break;
-                                        case "notification":
-                                            messages.add(new Mixture<>("\nUsage: notification <subCommand> \"{(isFinished,startDate,)endDate}<message>\" <index>\n", FontStyle.blackStyle));
-                                            messages.add(new Mixture<>("Description: For more helps of notification, please enter: notification help", FontStyle.blackStyle));
-                                            break;
-                                        case "all":
-                                            messages.add(new Mixture<>("\nCommand List is as followed: \n",FontStyle.blackStyle));
-                                            messages.add(new Mixture<>("1. usage \n",FontStyle.blackStyle));
-                                            messages.add(new Mixture<>("2. exit \n",FontStyle.blackStyle));
-                                            messages.add(new Mixture<>("3. print \n",FontStyle.blackStyle));
-                                            messages.add(new Mixture<>("4. clear \n",FontStyle.blackStyle));
-                                            messages.add(new Mixture<>("5. notification \n",FontStyle.blackStyle));
-                                            messages.add(new Mixture<>("6. ChemistryQuiz ",FontStyle.blackStyle));
-                                            break;
-                                    }
-                                } else messages.add(new Mixture<>("Illegal Command!", FontStyle.darkRedStyle));
-                                break;
-                            case "ChemistryQuiz":
-                                isCommand = true;
-                                dsdInput.remove(0,dsdInput.getLength());
-                                ChemistryQuiz.quiz();
-                                break;
-                            case "exit":
-                                isCommand = true;
-                                System.exit(0);
-                                break;
-                            case "print":
-                                isCommand = true;
-                                messages.add(new Mixture<>(contents[1], FontStyle.plainStyle));
-                                break;
-                            case "clear":
-                                isCommand = true;
-                                dsdFileContent.remove(0, dsdFileContent.getLength());
-                                messages.add(new Mixture<>("Cleared Successfully.", FontStyle.greenStyle));
-                                break;
-//                            case "del":
-//                            case "delete":
-//                                isCommand = true;
-//                                File f = new File(contents[1]);
-//                                if (!f.exists()) {
-//                                    messages.add(new Mixture<>("File or Folder doesn't exist!", FontStyle.darkRedStyle));
-//                                } else {
-//                                    FileUtils fu = FileUtils.getInstance();
-//                                    fu.moveToTrash(new File[]{f});
-//                                    if (!f.exists()) {
-//                                        messages.add(new Mixture<>("File or Folder deleted successfully.", FontStyle.greenStyle));
-//                                    } else {
-//                                        messages.add(new Mixture<>("File or Folder didn't delete properly!", FontStyle.darkRedStyle));
-//                                    }
-//                                }
-//                                break;
-                            case "notification":
-                                isCommand = true;
-                                String rawContent = contents[1];
-                                int breakPoint = rawContent.indexOf(" ");
-                                if (breakPoint != -1) {
-                                    String command_2 = rawContent.substring(0, rawContent.indexOf(" "));
-                                    String _string_switcher_2 = fuzzyMatch(command_2, Info.NOTIFICATION_COMMANDS);
-                                    boolean _boolean_switcher_2 = _string_switcher_2.isEmpty();
-                                    String switcher_2 = _boolean_switcher_2 ? command_2 : _string_switcher_2;
-                                    if (!_boolean_switcher_2 && !_string_switcher_2.equals(command_2)) {
-                                        _fuzzyMatchInfo(dsdFileContent,switcher_2);
-                                    }
-                                    //notification <command_2>
-                                    switch (switcher_2) {
-                                        case "add": {
-                                            int temp = rawContent.split("\"").length;
-                                            System.out.println(temp);
-                                            if ((rawContent.indexOf("{") < rawContent.indexOf("}")) && temp >= 2) {
-                                                String message = rawContent.substring(rawContent.indexOf("\"") + 1, rawContent.lastIndexOf("\""));
-                                                String rContent = message.substring(message.indexOf("}") + 1);
-                                                System.out.println(rContent);
-                                                String head = message.substring(message.indexOf("{") + 1, message.indexOf("}"));
-                                                String[] splits = head.split(",");
-
-                                                String startDate;
-                                                boolean isFinished;
-                                                String endDate;
-                                                Notification n;
-
-                                                switch (splits.length) {
-                                                    case 1:
-                                                        endDate = splits[0];
-                                                        n = new Notification(new NotificationContent(rContent), false, getTime(), endDate);
-                                                        break;
-                                                    case 3:
-                                                        startDate = splits[0];
-                                                        isFinished = Boolean.parseBoolean(splits[1]);
-                                                        endDate = splits[2];
-                                                        n = new Notification(new NotificationContent(rContent), isFinished, startDate, endDate);
-                                                        break;
-                                                    default:
-                                                        System.out.println("No Matching Result!");
-                                                        n = null;
-                                                        break;
-                                                }
-                                                if (n != null) {
-                                                    NotificationFileHandler.notifications.add(n);
-                                                    NotificationFileHandler.append(n.toString());
-                                                    int index;
-                                                    if (rawContent.lastIndexOf("\"") + 1 + 1 < rawContent.length()) {
-                                                        index = Integer.parseInt(rawContent.substring(rawContent.lastIndexOf("\"") + 1 + 1));
-                                                        if (NotificationFileHandler.notifications.size() < index) {
-                                                            messages.add(new Mixture<>("Index Out Of Bounds!", FontStyle.darkRedStyle));
-                                                        } else {
-                                                            NotificationFileHandler.notifications.add(index - 1, n);
-                                                            int length = 0;
-                                                            for (int i = 0; i < index - 1; i++) {
-                                                                Notification nLoop = NotificationFileHandler.notifications.get(i);
-                                                                length += nLoop.getContent().contentToString().length() + 3;
-//                                                                System.out.println("length: " + length);
-                                                            }
-//                                                            System.out.println("totalLength: " + length);
-                                                            int lengthOfN;//字面意思，为换行所预留的长度
-                                                            if (index != 1) {
-                                                                dsdNotification.insertString(length, "\n", FontStyle.blackStyle);
-                                                                lengthOfN = 1;
-                                                            } else lengthOfN = 0;
-                                                            if (n.isFinished())
-                                                                dsdNotification.insertString(length + lengthOfN, "[√]", FontStyle.greenStyle);
-                                                            else
-                                                                dsdNotification.insertString(length + lengthOfN, "[×]", FontStyle.darkRedStyle);
-//                                                            dsdNotification.insertString(length + lengthOfN + 3, "", FontStyle.blackStyle);
-                                                            n.getContent().append(dsdNotification, length + lengthOfN + 3);
-                                                            if (index == 1)
-                                                                dsdNotification.insertString(n.getContent().contentToString().length() + 3, "\n", FontStyle.blackStyle);
-//                                                        dsdNotification.insertString(length+n.getContent().contentToString().length()+1+3,"\n",FontStyle.blackStyle);
-                                                        }
-                                                    } else {
-                                                        if (n.isFinished())
-                                                            dsdNotification.insertString(dsdNotification.getLength(), "[√]", FontStyle.greenStyle);
-                                                        else
-                                                            dsdNotification.insertString(dsdNotification.getLength(), "[×]", FontStyle.darkRedStyle);
-//                                                        dsdNotification.insertString(dsdNotification.getLength(), "", FontStyle.blackStyle);
-                                                        n.getContent().append(dsdNotification, dsdNotification.getLength());
-                                                        dsdNotification.insertString(dsdNotification.getLength(), "\n", FontStyle.blackStyle);
-                                                        //startDate和endDate暂未加入使用
-                                                    }
-                                                    messages.add(new Mixture<>("Notification added Successfully!", FontStyle.greenStyle));
-                                                } else {
-                                                    messages.add(new Mixture<>("Error In Notification Pattern!", FontStyle.darkRedStyle));
-                                                }
-                                            } else if (rawContent.indexOf("{") >= rawContent.indexOf("}")) {
-                                                if (rawContent.indexOf("{") == rawContent.indexOf("}")) {
-                                                    //意思就是两个都不存在，只有两个都不存在的时候才可能相等均为-1
-                                                    messages.add(new Mixture<>("You should add \"{\" and \"}\" before your message to function as the head.", FontStyle.darkRedStyle));
-                                                } else if (rawContent.indexOf("{") > rawContent.indexOf("}")) {
-                                                    messages.add(new Mixture<>("Illegal message head. You should use it as \"{\"endDate\"}\"", FontStyle.darkRedStyle));
-                                                }
-                                            } else if (temp < 2) {
-                                                messages.add(new Mixture<>("You should use \"\" as \"message\" to cover your message.", FontStyle.darkRedStyle));
-                                            }
-                                            break;
-                                        }
-                                        case "remove": {
-                                            int indexForHuman = Integer.parseInt(contents[1].split(" ", 2)[1]);
-                                            int index = indexForHuman - 1;
-                                            if (NotificationFileHandler.notifications.size() < index) {
-                                                messages.add(new Mixture<>("Index Out Of Bounds!", FontStyle.darkRedStyle));
-                                            } else {
-                                                Notification backNotification = NotificationFileHandler.notifications.get(index);
-                                                NotificationFileHandler.notifications.remove(index);
-                                                int length = 0;
-                                                for (int i = 0; i < index; i++) {
-                                                    Notification notification = NotificationFileHandler.notifications.get(i);
-                                                    length += notification.getContent().contentToString().length() + 3;
-                                                }
-                                                dsdNotification.remove(length, backNotification.getContent().contentToString().length() + 3);
-                                                FileHandler.deleteLine(FileHandler.FOLDER_PATH + FileHandler.NOTIFICATION_NAME, indexForHuman);
-                                                messages.add(new Mixture<>("Notification Removed!", FontStyle.greenStyle));
-                                            }
-                                            break;
-                                        }
-                                        case "unfinished":
-                                            _finish(false, Integer.parseInt(contents[1].split(" ", 2)[1]), messages, dsdNotification);
-                                            break;
-                                        case "finished":
-                                            _finish(true, Integer.parseInt(contents[1].split(" ", 2)[1]), messages, dsdNotification);
-                                            break;
-                                        default:
-                                            messages.add(new Mixture<>("No Commands Matches!", FontStyle.darkRedStyle));
-                                            break;
-                                    }
-                                } else {
-                                    messages.add(new Mixture<>("\nYou might want to execute commands:\n", FontStyle.darkRedStyle));
-                                    messages.add(new Mixture<>("notification add \"{heads}<message>\" <index>\n", FontStyle.darkRedStyle));
-                                    messages.add(new Mixture<>("notification remove <index>\n", FontStyle.darkRedStyle));
-                                }
-                        }
-                        if (isCommand) {
-//                            String time = "[" + getTime() + "]";
-//                            if (dsdFileContent.getLength() != 0)
-//                                dsdFileContent.insertString(dsdFileContent.getLength(), "\n", FontStyle.plainStyle);
-//                            //如果不是第一行那就换行
-//                            dsdFileContent.insertString(dsdFileContent.getLength(), time + " ", FontStyle.greyStyle);
-                            _timePrefix(dsdFileContent);
-                            for (Mixture<String, Style> message : messages) {
-//                                dsdFileContent.insertString(dsdFileContent.getLength(), "", FontStyle.plainStyle);
-                                dsdFileContent.insertString(dsdFileContent.getLength(), message.getKey(), message.getValue());
-                                //如果他正在输入命令的话
-                            }
-                        }
-                    }
-                } catch (BadLocationException badLocationException) {
-                    //ignore it.
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                try {
-                    if (e.getKeyCode() == KeyEvent.VK_ENTER && isCommand) {
-                        dsdInput.remove(0, dsdInput.getLength());
-                        isCommand = false;
-                    }
-                } catch (BadLocationException badLocationException) {
-                    //ignore it
-                }
-            }
-        });
+        jtaInput.addKeyListener(new EnterKeyListener());
         jtaInput.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {

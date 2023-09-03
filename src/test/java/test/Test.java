@@ -1,4 +1,4 @@
-package priv.samera2022.test;
+package test;
 
 import priv.samera2022.module.FontStyle;
 import priv.samera2022.module.mainFrame;
@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class test {
+public class Test {
     private static String content = "Hello![RED]That's good![BLUE]GOOD!";
     public static void main(String[]args) throws BadLocationException {
 //        append();

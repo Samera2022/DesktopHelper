@@ -33,13 +33,28 @@ public class UpdateInfo {
             " - [彩色系统] 应当注意的是，目前颜色仍是固定的，有 黑 蓝 黄 深红 灰 绿可选。" +
             "后续将考虑增加自定义颜色系统，可选颜色在FontStyle类中。彩色系统的支持范围为Notification栏目。\n";
     private static final String version_0_0_3_1 =
-            " - [Released] - [0.0.3.1] - 2023-09-02 13:45\n" +
+            " - [Released] - [0.0.3.1] - 2023-08-26 09:58\n" +
             "## [Added]\n" +
             " - 增加模糊匹配机制！简化指令输入的时间，现在你只需要大概打出指令前几个字母就可以调用！\n" +
             " - 增加gadgets包（小工具包），可以向其中加入各种各样的小功能小工具！目前已加入ChemistryQuiz轨道表达式小测试！\n" +
             "## [Descriptions]\n" +
             " - 即将进行大规模底层逻辑重写，将会把该工程推送至v0.0.3.1分支保存!\n" +
             " - 工程将会由Listener+switch的结构转为总线注册总线监听结构！\n";
+    private static final String version_pre_0_0_4 =
+            " - [Released] - [pre0.0.4] - 2023-09-03 16:48\n" +
+            "## [Changed]&&[Descriptions]\n" +
+            " - 总线更改完成！目前总线仅搭载print指令，故本版本尚为测试版本。总线更改完成后，可以在CommandHeads中使用@Command注解，" +
+            "同时填入必要的name参数，选填delete与hasTextOutput参数即可完成指令的注册。故Info中已移除ArrayList<String> COMMANDS，" +
+            "待Notification与其二级指令完成迁移后同时也会删除ArrayList<String> NOTIFICATION_COMMANDS。\n" +
+            " - 总线信息传递大致如下：EnterKeyListener.java监听到输入框输入后调用EventBus.java的register方法，" +
+            "register方法将命令综合处理完成后传入CommandHandler.java中的handleCommand方法，handleCommand方法先对其进行模糊匹配，" +
+            "模糊匹配完成后将直接调用位于CommandHeads的该方法。\n" +
+            " - 对0.0.3.1更新日期做出修正：模糊匹配机制于2023-08-26 09:58推出，而ChemistryQuiz则更早完成，但加入时间不详（晚于模糊匹配机制）。" +
+            "故v0.0.3.1沿用模糊匹配机制的完成时间，即2023-08-26 09:58。\n" +
+            "## [Warns]\n" +
+            " - 潜在的危险：在EnterKeyListener.java中，为实现按下回车键后光标仍能恢复到第一行最前面的位置" +
+            "（因为EnterKeyListener.java的keyPressed所能实现的功能皆在enter引发换行之前，所以只能在keyReleased进行调正）" +
+            "采用了isCommand进行判断进而删除dsd前面的内容。而使用isCommand未经过严谨的考量，可能存在一些意想不到的问题。";
     private static final String warns =
             "警示: " +
             "-后续指令注册时，应在Info中向COMMANDS加入该指令以进行模糊匹配！" +
@@ -49,6 +64,6 @@ public class UpdateInfo {
             "-在各个Listener中，你其实有很多变量都是可以调用的。很多时候如果这个方法用这个变量不行，可以试试用另外一个方法调用另外一个变量来解决。" +
             "比如说在模糊判断输出Couldn't find that command! Guess...的时候，用message会导致时间和内容吞并，但是用dsdFileContent附加时间就可以解决。";
     public static void main(String[] args) {
-        System.out.println(version_0_0_3_1);
+        System.out.println(version_pre_0_0_4);
     }
 }
