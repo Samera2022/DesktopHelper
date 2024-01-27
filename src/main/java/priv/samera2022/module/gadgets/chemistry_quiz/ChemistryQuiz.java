@@ -7,13 +7,13 @@ public class ChemistryQuiz {
     public static void main(String[] args) {
         quiz();
     }
-    public static void quiz(){
-        int time = 0;
+    public static int quiz(){
+        int time = 1;
         for (;;) {
-            int random = randomInt(1-1,18-1);
+            int random = randomInt(1-1,18-1);//这是为了适配list中元素的序号
             Element element = Element.elements.get(random);
             boolean isCh = new Random().nextBoolean();
-            String answer = "default";
+            String answer;
             if (isCh){
                 answer = JOptionPane.showInputDialog(null,element.getChName()+"的电子排布式是？","第"+time+"次",JOptionPane.QUESTION_MESSAGE);		//输入对话框
             } else {
@@ -25,6 +25,7 @@ public class ChemistryQuiz {
             }
             time++;
         }
+        return time;
     }
     //生成[min,max]内的随机整数
     private static int randomInt(int min,int max){

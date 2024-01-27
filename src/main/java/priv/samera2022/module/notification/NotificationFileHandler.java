@@ -18,7 +18,7 @@ public class NotificationFileHandler {
 //        System.out.println("inContent: "+inContent);
         String enter = inContent.length()!=0?"\n":"";
 //        System.out.println("preOutput: "+inContent+enter+content);
-        FileHandler.write(FileHandler.FOLDER_PATH+FileHandler.NOTIFICATION_NAME,inContent+enter+content);
+        FileHandler.write(FileHandler.FOLDER_PATH+FileHandler.NOTIFICATION_NAME,inContent+enter+content,true);
     }//警示！在append的时候已经自动检测是否是第一行，若非第一行则执行换行操作。
 
     public static ArrayList<Notification> read(){

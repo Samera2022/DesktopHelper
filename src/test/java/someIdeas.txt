@@ -1,0 +1,2 @@
+2024/1/14 不管怎么说，也许EventBus.java的split的方法还有另一种实现形式？
+          比方说写一个int nextIndexOf(int startIndex)的方法来获得下一个(或者)的位置之类的？

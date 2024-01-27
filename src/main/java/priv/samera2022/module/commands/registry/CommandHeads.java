@@ -1,27 +1,234 @@
 package priv.samera2022.module.commands.registry;
 
-import priv.samera2022.module.FontStyle;
-import priv.samera2022.module.Mixture;
+import priv.samera2022.module.*;
 import priv.samera2022.module.annotation.Command;
+import priv.samera2022.module.gadgets.quiz.Quiz;
+import priv.samera2022.module.gadgets.web.HttpURLConnection;
 
+import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Style;
+import java.awt.*;
+import java.awt.dnd.DnDConstants;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 
-import static priv.samera2022.module.mainFrame.dsdFileContent;
-import static priv.samera2022.module.mainFrame.dsdInput;
+import static priv.samera2022.module.mainFrame.*;
 
 public class CommandHeads {
+    public static JFrame frame = new JFrame();
+
+    static {
+        int locX = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth() - 300;
+        int locY = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 100;
+        System.out.println("locX = " + locX);
+        System.out.println("locY = " + locY);
+        frame.setBounds(300, 100, locX - 300, locY - 100);
+        frame.setUndecorated(true);
+        frame.enableInputMethods(false);
+        JPanel totalPanel = new JPanel();
+        totalPanel.setBounds(300, 100, locX - 300, locY - 100);
+        JTextPane jtpFileContent = new JTextPane(dsdFileContent); // 显示文件内容区域
+        jtpFileContent.setBounds(300, 100, locX - 300, locY - 100);
+        DropTarget dtsFileContent = new DropTarget(DropTarget.FILE_CONTENT_ANALYZE, dsdFileContent, jtpFileContent);
+        jtpFileContent.setEditable(false);
+        ScrollPane sp2 = new ScrollPane();
+        sp2.add(jtpFileContent);
+        sp2.setBounds(300, 100, locX - 300, locY - 100);
+        new java.awt.dnd.DropTarget(jtpFileContent, DnDConstants.ACTION_COPY_OR_MOVE, dtsFileContent);
+        totalPanel.add(sp2);
+        frame.add(totalPanel);
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.setVisible(false);
+    }
+
     //commands的0是指令头，依次往下分
     @Command(name = "print")
-    public static void print(Mixture<Boolean,ArrayList<String>> mixture){
-        boolean delete = mixture.getKey();
-        ArrayList<String> commands = mixture.getValue();
-        String content = (String) commands.get(1);
-        output(new Mixture[]{new Mixture<>(content, FontStyle.blackStyle)}, delete);
+    public static void print(ArrayList<String> commands) {
+//        boolean delete = mixture.getKey();
+//        ArrayList<String> commands = mixture.getValue();
+        String content = commands.get(1);
+        formatter(true, new Mixture<>(content, FontStyle.blackStyle));
 //        System.out.println(commands.get(0));
+    }
+
+    //失败！存在问题！
+    @Command(name = "store")
+    public static void store(ArrayList<String> commands) {
+//        boolean delete = mixture.getKey();
+//        ArrayList<String> commands = mixture.getValue();
+        String location = commands.get(1);
+        System.out.println(location);
+        FileHandler.write(FileHandler.FOLDER_PATH + FileHandler.STORAGE_NAME, location + "\n", true);
+
+        formatter(true, new Mixture<>("Store Location Successfully!", FontStyle.greenStyle));
+    }
+
+
+    @Command(name = "delete")
+    public static void delete(ArrayList<String> commands) {
+//        boolean delete = mixture.getKey();
+        String filePath = commands.get(1);
+        Path path = Paths.get(filePath);
+        if (Files.exists(path.resolve(new File(filePath).getName()))) {
+            Desktop.getDesktop().moveToTrash(new File(filePath));
+            formatter(true, new Mixture<>("Operation inspecting... Please Wait.", FontStyle.blackStyle));
+            Thread thread = new Thread() {
+                @Override
+                public void run() {
+                    super.run();
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            thread.start();
+            if (!Files.exists(path.resolve(new File(filePath).getName())))
+                formatter(true, new Mixture<>("Delete Successfully!", FontStyle.greenStyle));
+            else
+                formatter(true, new Mixture<>("Delete UnSuccessfully!", FontStyle.darkRedStyle));
+        } else
+            formatter(true, new Mixture<>("File(Folder) Not Found!", FontStyle.darkRedStyle));
+    }
+
+    @Command(name = "frame")
+    public static void frame(ArrayList<String> commands) {
+//        boolean delete = mixture.getKey();
+//        ArrayList<String> commands = mixture.getValue();
+        String rawSubCommand = commands.get(1);
+        String subCommand = FuzzyMatcher.fuzzyMatch(rawSubCommand, Arrays.asList("broaden", "close", "dispose"));
+        //常见异常：在switch case里面写了指令但是却在fuzzyMatch的数组里忘记加上这个指令
+        switch (subCommand) {
+            case "broaden":
+                clearInput();
+                frame.setVisible(true);
+                break;
+            case "close":
+                frame.setVisible(false);
+                break;
+            case "dispose":
+                frame.dispose();
+                formatter(true, new Mixture<>("窗体已清除", FontStyle.blackStyle));
+                break;
+            default:
+                formatter(true, new Mixture<>("尽管这条消息肯定不会出现在控制台上，下面的break也没有实际用途，但是还是写上了。", FontStyle.blackStyle));
+                break;
+        }
+    }
+
+    @Command(name = "quiz")
+    public static void quiz(ArrayList<String> commands) {
+//        boolean delete = mixture.getKey();
+//        ArrayList<String> commands = mixture.getValue();
+        String rawSubCommand = commands.get(1);
+        String subCommand = FuzzyMatcher.fuzzyMatch(rawSubCommand, Arrays.asList("create", "start", "delete", "list"));
+        //常见异常：在switch case里面写了指令但是却在fuzzyMatch的数组里忘记加上这个指令
+        switch (subCommand) {
+            case "create":
+                Quiz.input(commands.get(2));
+                if (new File(FileHandler.FOLDER_PATH + FileHandler.QUIZ_PATH + commands.get(2) + ".txt").exists())
+                    formatter(true, new Mixture<>("创建成功!", FontStyle.greenStyle));
+                else formatter(true, new Mixture<>("创建失败!", FontStyle.darkRedStyle));
+                break;
+            case "start":
+                String result = Quiz.examine(commands.get(2));
+                boolean digit = false;
+                for (char c : result.toCharArray()) {
+                    if (Character.isDigit(c)) {
+                        digit = true;
+                        break;
+                    }
+                }
+                if (digit) formatter(true, new Mixture<>("这次一共答对了" + result + "次，下次继续努力吧！", FontStyle.greenStyle));
+                else formatter(true, new Mixture<>(result, FontStyle.darkRedStyle));
+                break;
+            case "delete":
+                File file1 = new File(FileHandler.FOLDER_PATH + FileHandler.QUIZ_PATH + commands.get(2) + ".txt");
+                if (JOptionPane.showConfirmDialog(null, "是否确定删除该测试？删除后该测试将无法被恢复！", "警告", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    if (file1.exists()) {
+                        if (file1.delete()) formatter(true, new Mixture<>("已成功删除该测试", FontStyle.greenStyle));
+                        else formatter(true, new Mixture<>("删除该测试失败!", FontStyle.darkRedStyle));
+                    } else formatter(true, new Mixture<>("该测试不存在!", FontStyle.darkRedStyle));
+                }
+                break;
+            case "list":
+                Path directory = Paths.get(FileHandler.FOLDER_PATH + FileHandler.QUIZ_PATH);
+                ArrayList<String> names = new ArrayList<>();
+                try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(directory)) {
+                    for (Path path : directoryStream) {
+                        String name = Paths.get(path.getFileName().toString()).toString();
+                        String[] parts = name.split("\\.");
+                        if (parts.length > 0) {
+                            name = parts[0]; // 获取不包含扩展名的文件名
+                        }
+                        names.add(name);
+                        System.out.println(name);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    mainFrame.ExceptionHandler(e);
+                }
+                if (names.size() != 0) {
+                    StringBuilder output = new StringBuilder();
+                    for (String content : names) {
+                        //在不能用lambda表达式的时候，for循环也不失是一种好选择
+                        output.append(content).append(", ");
+                    }
+                    output = new StringBuilder(output.substring(0, output.lastIndexOf(", ")));
+                    formatter(true, new Mixture<>("找到以下测试: \n", FontStyle.blackStyle), new Mixture<>(output.toString(), FontStyle.blueStyle));
+                } else formatter(true, new Mixture<>("暂无测试", FontStyle.blackStyle));
+                break;
+            default:
+                formatter(true, new Mixture<>("尽管这条消息肯定不会出现在控制台上，下面的break也没有实际用途，但是还是写上了。", FontStyle.blackStyle));
+                break;
+        }
+    }
+
+    @Command(name = "openai")
+    public static void openai(ArrayList<String> commands) {
+            formatter(true, new Mixture<>("请等待，正在请求中......", FontStyle.blackStyle));
+            String content = commands.get(1);
+            clearInput();
+            String response = HttpURLConnection.question(content);
+            formatter(true, new Mixture<>(response, FontStyle.blackStyle));
+    }
+
+    private static void clearInput(){
+        try {
+            dsdInput.remove(0, dsdInput.getLength());
+            dsdInput.insertString(0, mainFrame.inputAsst, FontStyle.plainStyle);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+            mainFrame.ExceptionHandler(e);
+        }
+    }
+
+    /**
+     * @author Samera2022
+     * 使用formatter的目的是为了更方便地输出,举例如下。
+     * 这是一个来自print的标准输出方案：
+     * output(new Mixture[]{new Mixture<>(content, FontStyle.blackStyle)}, delete);
+     * 这种输出方案不仅会让编译器提示Unchecked assignment: 'priv.samera2022.module.Mixture[]' to 'priv.samera2022.module.Mixture<java.lang.String,javax.swing.text.Style>[]'，
+     * 而且还无法使用@SafeVarargs注解来消除，因为该方法参数是固定的，不是可变参数方法。
+     * 而使用formatter的方案如下：
+     * formatter(delete,new Mixture<>(content, FontStyle.blackStyle));
+     * 不仅不需要新建数组，而且可以利用可变参数的函数在调用的过程中就产生一个抽象的数组来输出，
+     * 而这个数组在可变参数的函数中被套上了Mixture<String,Style>的泛型，就可以使用@SafeVarargs提示已经除去了堆污染和泛型错误。
+     * 简单地来解释，就是 多个抽象元素(具体元素也可以，只不过cast了也一样)->调用可变参数函数->(在可变参数函数中)形成数组，并在这个时候对数组加上泛型cast->警告用@SafeVarargs消除
+     */
+    @SafeVarargs
+    private static void formatter(boolean delete, Mixture<String, Style>... objects) {
+        output(objects, delete);
     }
 
     private static void output(Mixture<String, Style>[] mixtures, boolean delete) {
@@ -31,13 +238,16 @@ public class CommandHeads {
                 dsdFileContent.insertString(dsdFileContent.getLength(), message.getKey(), message.getValue());
                 //如果他正在输入命令的话
             }
-            if (delete) dsdInput.remove(0,dsdInput.getLength());
-        } catch (BadLocationException e){
+            if (delete) dsdInput.remove(0, dsdInput.getLength());
+        } catch (BadLocationException e) {
             //ignore it.
         }
     }
 
-    private static String getTime() { return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()); }
+    private static String getTime() {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis());
+    }
+
     public static void _timePrefix(DefaultStyledDocument dsdFileContent) throws BadLocationException {
         String time = "[" + getTime() + "]";
         if (dsdFileContent.getLength() != 0)

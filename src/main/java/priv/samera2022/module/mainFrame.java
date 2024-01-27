@@ -2,6 +2,7 @@ package priv.samera2022.module;
 
 //import com.sun.jna.platform.FileUtils;
 
+import priv.samera2022.module.commands.registry.CommandHeads;
 import priv.samera2022.module.keylisteners.EnterKeyListener;
 import priv.samera2022.module.notification.Notification;
 import priv.samera2022.module.notification.NotificationFileHandler;
@@ -16,7 +17,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class mainFrame {
@@ -24,6 +24,7 @@ public class mainFrame {
     public static DefaultStyledDocument dsdInput = new DefaultStyledDocument(FontStyle.sc);
     public static DefaultStyledDocument dsdFileContent = new DefaultStyledDocument(FontStyle.sc);
     public static DefaultStyledDocument dsdNotification = new DefaultStyledDocument(FontStyle.sc);
+    public static final String inputAsst = "-->HERE TO INPUT<--";
 
     public static void main(String[] args) throws BadLocationException {
         frame();
@@ -31,7 +32,10 @@ public class mainFrame {
 
     public static void frame() throws BadLocationException {
         //警示：对于控件内文字的更改，不应采用xxx.setDocument(xxx)，而应该修改该控件内的DefaultStyledDocument！
-        int x = 1236;
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenWidth = (int) screenSize.getWidth();
+//        int screenHeight = (int) screenSize.getHeight();
+        int x = screenWidth-300;
         //<---窗体头--->
         JFrame frame = new JFrame();
         frame.setSize(300, 700);
@@ -43,7 +47,7 @@ public class mainFrame {
         totalPanel.setLocation(x, 0);
 
         //<---INPUT_ANALYZE--->
-        JTextArea jtaInput = new JTextArea(dsdInput); // 显示文件内容区域
+        JTextArea jtaInput = new JTextArea(dsdInput);
         DropTarget dtsInput = new DropTarget(DropTarget.INPUT_ANALYZE, dsdInput, jtaInput);
         jtaInput.setEditable(true);
         jtaInput.setLineWrap(true);
@@ -52,7 +56,6 @@ public class mainFrame {
         sp1.add(jtaInput);
         sp1.setBounds(x, 0, 300, 100);
         new java.awt.dnd.DropTarget(jtaInput, DnDConstants.ACTION_COPY_OR_MOVE, dtsInput);
-        String inputAsst = "-->HERE TO INPUT<--";
         dsdInput.insertString(0, inputAsst, FontStyle.plainStyle);
         totalPanel.add(sp1);
 
@@ -92,7 +95,8 @@ public class mainFrame {
             @Override
             public void focusGained(FocusEvent e) {
                 //假如鼠标点击到该控件内，即焦点位于控件内
-                System.out.println("focusGained!");
+//                System.out.println("focusGained!");
+                //获取焦点的输出代码在这里
                 JTextArea jta = (JTextArea) e.getSource();
                 if (jta.getText().equals(inputAsst)) {
                     jta.setText(null);
@@ -103,8 +107,15 @@ public class mainFrame {
             public void focusLost(FocusEvent e) {
                 try {
                     //假如鼠标点击到该控件外，即焦点位于控件外
-                    System.out.println("focusLost!");
+//                    System.out.println("focusLost!");
+                    //获取焦点的输出代码在这里
                     JTextArea jta = (JTextArea) e.getSource();
+//                    if (CommandHeads.frame.isVisible()&&jta.getText().contains("frame b")){
+//                        dsdInput.remove(0,dsdInput.getLength());
+//                    }
+                    //可能会浪费性能，但我也不知道其他怎么解决了。因为一旦键入frame broaden指令，那么焦点就会丢失，
+                    // 进而keyReleased事件就会被打断，进而dsdInput的文字不会被消除。
+                    //该方法已被CommandHeads.clearInput()取代。
                     if (jta.getText().isEmpty()) {
                         dsdInput.insertString(0, inputAsst, FontStyle.plainStyle);//JTextArea并不支持字体颜色
                     }
@@ -172,52 +183,8 @@ public class mainFrame {
         }
     }
 
+    public static void ExceptionHandler(Exception exception){
 
-    static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    private static String getTime() {
-        return sdf.format(System.currentTimeMillis());
     }
 
-    private static void _timePrefix(DefaultStyledDocument dsdFileContent) throws BadLocationException {
-        String time = "[" + getTime() + "]";
-        if (dsdFileContent.getLength() != 0)
-            dsdFileContent.insertString(dsdFileContent.getLength(), "\n", FontStyle.plainStyle);
-        //如果不是第一行那就换行
-        dsdFileContent.insertString(dsdFileContent.getLength(), time + " ", FontStyle.greyStyle);
-    }
-
-    private static void _fuzzyMatchInfo(DefaultStyledDocument dsdFileContent, String command) throws BadLocationException {
-        _timePrefix(dsdFileContent);
-        dsdFileContent.insertString(dsdFileContent.getLength(), "\nCouldn't find that command! Guess you want to use command \"", FontStyle.blueStyle);
-        dsdFileContent.insertString(dsdFileContent.getLength(), command, FontStyle.darkRedStyle);
-        dsdFileContent.insertString(dsdFileContent.getLength(), "\"!", FontStyle.blueStyle);
-        dsdFileContent.insertString(dsdFileContent.getLength(), "\nExecuting Command \"", FontStyle.blueStyle);
-        dsdFileContent.insertString(dsdFileContent.getLength(), command, FontStyle.darkRedStyle);
-        dsdFileContent.insertString(dsdFileContent.getLength(), "\"!", FontStyle.blueStyle);
-    }
-
-    private static String fuzzyMatch(String target, ArrayList<String> list) {
-        String output = "";
-        for (int i = 0; i < target.length(); i++) {
-            //i是第几位
-            if (list.size() != 1) {
-                for (int j = 0; j < list.size(); j++) {
-                    String element = list.get(j);
-                    if (element.charAt(i) != target.charAt(i) && list.size() != 1) {
-                        list.remove(element);
-                        j--;
-                    } else {
-                        output = list.get(0);
-                        break;
-                    }
-                }
-            } else {
-                //这段代码究竟有没有可能会运行？
-                output = list.get(0);
-                break;
-            }
-        }
-        return output;
-    }
 }

@@ -4,6 +4,7 @@ import priv.samera2022.module.event.EventBus;
 import priv.samera2022.module.event.events.EnterTypedKeyEvent;
 
 import javax.swing.text.BadLocationException;
+import javax.swing.text.JTextComponent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -18,9 +19,19 @@ public class EnterKeyListener implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER){
-            EventBus.register(new EnterTypedKeyEvent(e));
-            isCommand = true;
+//        try {
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                EventBus.register(new EnterTypedKeyEvent(e));
+                isCommand = true;
+                String content = ((JTextComponent) e.getSource()).getText();
+                //这里可能会浪费性能
+//                if (content.contains("frame b")) {
+//                    dsdInput.remove(0, dsdInput.getLength());
+//                    isCommand = false;
+//                }
+//            }
+//        } catch (BadLocationException badLocationException) {
+//            //ignore it
         }
     }
 

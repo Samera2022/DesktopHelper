@@ -6,14 +6,20 @@ import java.util.ArrayList;
 
 public class FileHandler {
     public static final String FOLDER_PATH = "D:/_S_A_M/Files/AppData/DesktopHelper/";
+    public static final String STORAGE_NAME = "Storage.txt";
     public static final String NOTIFICATION_NAME = "Notification.txt";
+    public static final String QUIZ_PATH = "quizzes/";
 
     static {
         try {
             File folder = new File(FOLDER_PATH);
             fixError(folder, true);
+            File storage = new File(FOLDER_PATH + STORAGE_NAME);
+            fixError(storage,false);
             File notification = new File(FOLDER_PATH + NOTIFICATION_NAME);
             fixError(notification, false);
+            File quizzes = new File(FOLDER_PATH + QUIZ_PATH);
+            fixError(quizzes, true);
         } catch (IOException e) {
             //ignore it.
         }
@@ -53,11 +59,11 @@ public class FileHandler {
         return result;
     }
 
-    public static void write(String path, String content) {
+    public static void write(String path, String content, boolean append) {
         File f = new File(path);
         try {
             if (f.exists()) {
-                FileWriter fw = new FileWriter(f,StandardCharsets.UTF_8,false);
+                FileWriter fw = new FileWriter(f,StandardCharsets.UTF_8,append);
                 BufferedWriter bw = new BufferedWriter(fw);
                 bw.write(content);
                 bw.close();
