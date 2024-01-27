@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="DesktopHelper:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/DesktopHelper_jar</output-path>
+    <root id="archive" name="DesktopHelper.jar">
+      <element id="module-output" name="DesktopHelper" />
+    </root>
+  </artifact>
+</component>

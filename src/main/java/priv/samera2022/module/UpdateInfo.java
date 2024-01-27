@@ -90,7 +90,9 @@ public class UpdateInfo {
             "其中，这个大屏幕与主程序共享dsdFileContent(DefaultStyledDocument)，基本相当于与主程序共享负责文件读取与操作输出的中间组件。\n" +
             " - \"frame broaden\" 执行该指令后将会让拓展窗体变得可见。\n" +
             " - \"frame close\" 执行该指令后将会让拓展窗体变得不可见。但是通常情况下可以使用dispose来代替。\n" +
-            " - \"frame dispose\" 执行该指令后将会关闭拓展窗体，并释放一部分资源。";
+            " - \"frame dispose\" 执行该指令后将会关闭拓展窗体，并释放一部分资源。\n" +
+            "# openai指令\n" +
+            " - \"openai <question>\" 执行该指令后将会联网请求openai模型<question>的内容，并等待回复。目前仅支持单一对话询问。";
     private static final String warns =
             "警示: " +
             "-后续指令注册时，应在Info中向COMMANDS加入该指令以进行模糊匹配！" +
@@ -100,6 +102,6 @@ public class UpdateInfo {
             "-在各个Listener中，你其实有很多变量都是可以调用的。很多时候如果这个方法用这个变量不行，可以试试用另外一个方法调用另外一个变量来解决。" +
             "比如说在模糊判断输出Couldn't find that command! Guess...的时候，用message会导致时间和内容吞并，但是用dsdFileContent附加时间就可以解决。";
     public static void main(String[] args) {
-        System.out.println(version_pre_0_0_4);
+        System.out.println(version_0_0_4);
     }
 }
