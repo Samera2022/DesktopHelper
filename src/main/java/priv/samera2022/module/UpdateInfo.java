@@ -43,7 +43,7 @@ public class UpdateInfo {
     private static final String version_pre_0_0_4 =
             " - [Released] - [pre0.0.4] - 2023-09-03 16:48\n" +
             "## [Changed]&&[Descriptions]\n" +
-            " - 总线更改完成！目前总线仅搭载print指令，故本版本尚为测试版本。总线更改完成后，可以在CommandHeads中使用@Command注解，" +
+            " - 总线更改完成！目前总线仅搭载print指令，故本版本尚为测试版本。总线更改完成后，可以在CommandHeads中使用Command注解，" +
             "同时填入必要的name参数，选填delete与hasTextOutput参数即可完成指令的注册。故Info中已移除ArrayList<String> COMMANDS，" +
             "待Notification与其二级指令完成迁移后同时也会删除ArrayList<String> NOTIFICATION_COMMANDS。\n" +
             " - 总线信息传递大致如下：EnterKeyListener.java监听到输入框输入后调用EventBus.java的register方法，" +
@@ -61,13 +61,13 @@ public class UpdateInfo {
             "# Structure\n" +
             " - 注册指令变更。注册指令不再使用output(new Mixture[]{Mixture<>(String, Style)...}, Boolean);语句，" +
             "转而使用formatter(Boolean,Mixture<>(String, Style)...);语句。相较于原先语句该语句能够较好的结合数组和泛型，借助可变参数方法将" +
-            "抽象的数组cast为泛型数组调用output进行输出，再利用@SafeVarargs注解消除编译器对formatter方法的警告。简而言之，就是利用formatter方法" +
+            "抽象的数组cast为泛型数组调用output进行输出，再利用SafeVarargs注解消除编译器对formatter方法的警告。简而言之，就是利用formatter方法" +
             "对output方法进行了一定程度的封装。\n" +
             " - 指令参数变更。指令参数由原先的Mixture<Boolean,ArrayList<String>>改为ArrayList<String>，毕竟原先这个类型确实长得比较离谱......" +
-            "直接粗暴地把delete(Boolean)和指令本体结合起来，确实不太好。而且delete原本是@Command注解里面的参数，再在方法的参数里面出现就太冗杂了。" +
+            "直接粗暴地把delete(Boolean)和指令本体结合起来，确实不太好。而且delete原本是Command注解里面的参数，再在方法的参数里面出现就太冗杂了。" +
             "或许我可以在output或者formatter的方法里面直接反射获取目标方法的注解，然后得到delete参数？这样就不需要在方法多个if分支里面重复写false或者true了，" +
             "其实本来也可以直接在方法体里写一个新的boolean delete声明，但是这样的话再调用delete的时候编译器老是会提示，就让人看得比较烦。\n" +
-            " - 总线升级！已省去@Command注解中的delete()和hasTextOutput()的使用，转为在CommandHeads相应指令的方法体中直接调用formatter()方法填入相应参数。\n" +
+            " - 总线升级！已省去Command注解中的delete()和hasTextOutput()的使用，转为在CommandHeads相应指令的方法体中直接调用formatter()方法填入相应参数。\n" +
             " - 修正fuzzyMatcher方法，更正了该方法的逻辑。\n" +
             "# Commands\n" +
             " - 修正delete指令。\n" +
