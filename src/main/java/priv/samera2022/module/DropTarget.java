@@ -42,6 +42,7 @@ public class DropTarget extends DropTargetAdapter {
 
     @Override
     public void drop(DropTargetDropEvent dtde) {
+        DefaultStyledDocument dF = mainFrame.dsdFileContent;
         try {
             if (dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) // 如果拖入的文件格式受支持
             {
@@ -88,6 +89,8 @@ public class DropTarget extends DropTargetAdapter {
 //                                            dsd.insertString(dsd.getLength(), "\r\n", FontStyle.plainStyle);
                                             }
                                             break;
+                                        case ".log":
+                                        case ".LOG":
                                         case ".txt":
                                         case ".TXT":
                                             if (((t.contains("requires") || (t.contains("needs"))) && t.contains("Mod")) ||

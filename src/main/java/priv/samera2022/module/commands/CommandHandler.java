@@ -25,6 +25,8 @@ public class CommandHandler {
             if (method.isAnnotationPresent(Command.class)) {
                 Command command = method.getAnnotation(Command.class);
                 String name = command.name();
+                if (name.equals("default")) name = method.getName();
+                //这里可以用三元运算，但是没必要
                 COMMAND_NAME.add(name);
                 NAME_COMMAND_MAP.put(name, method);
             }

@@ -9,29 +9,64 @@ public class FileHandler {
     public static final String STORAGE_NAME = "Storage.txt";
     public static final String NOTIFICATION_NAME = "Notification.txt";
     public static final String QUIZ_PATH = "quizzes/";
+    public static final String CONFIG_PATH = "config/";
+    public static final String CONFIG_GPT_PATH = "gpt/";
+    public static final String CONFIG_GPT_DEFAULT_NAME = "default.json";
+    public static final String CONFIG_NAME = "config.cfg";
 
-    static {
+    //还是用init方法比较好，相较static块而言更方便初始化。
+    public static void init(){
         try {
             File folder = new File(FOLDER_PATH);
             fixError(folder, true);
+
             File storage = new File(FOLDER_PATH + STORAGE_NAME);
             fixError(storage,false);
+
             File notification = new File(FOLDER_PATH + NOTIFICATION_NAME);
             fixError(notification, false);
+
             File quizzes = new File(FOLDER_PATH + QUIZ_PATH);
             fixError(quizzes, true);
+
+            File config_path = new File(FOLDER_PATH + CONFIG_PATH);
+            fixError(config_path, true);
+
+            File config_gpt_path = new File(FOLDER_PATH + CONFIG_PATH + CONFIG_GPT_PATH);
+            fixError(config_gpt_path, true);
+
+            File config_gpt_default = new File(FOLDER_PATH + CONFIG_PATH + CONFIG_GPT_PATH + CONFIG_GPT_DEFAULT_NAME);
+            fixError(config_gpt_default, false);
+            if (FileHandler.read(FOLDER_PATH + CONFIG_PATH + CONFIG_GPT_PATH + CONFIG_GPT_DEFAULT_NAME).length()==0)
+                priv.samera2022.module.gadgets.web.config.ConfigHandler.write();
+
+            File config = new File(FOLDER_PATH + CONFIG_PATH + CONFIG_NAME);
+            fixError(config, false);
+            if (FileHandler.read(FOLDER_PATH + CONFIG_PATH + CONFIG_NAME).length()==0)
+                priv.samera2022.module.config.ConfigHandler.write();
+
         } catch (IOException e) {
+            e.printStackTrace();
             //ignore it.
         }
     }
 
     private static void fixError(File file, boolean isDictionary) throws IOException {
-        if (file.isDirectory() != isDictionary) file.delete();
+        String call = file.isDirectory()?"Directory":"File";
+        if (file.isDirectory() != isDictionary) {
+            mainFrame.logger.info("There's already "+call+" "+file.getName()+" exists! Deleting...");
+            if (file.delete()) mainFrame.logger.info("Delete "+call+" "+file.getName()+" Successfully!");
+            else mainFrame.logger.error("Delete "+call+" "+file.getName()+" Unsuccessfully!");
+        }
         if (!file.exists()) {
+            mainFrame.logger.info(call+" "+file.getName()+" doesn't exist!");
+            mainFrame.logger.info("Creating new "+call+" "+file.getName()+"...");
             if (isDictionary) {
-                file.mkdirs();
+                if (file.mkdirs()) mainFrame.logger.info("Create new folder "+file.getName()+" Successfully!");
+                else mainFrame.logger.error("Creating new folder "+file.getName()+" Unsuccessfully!");
             } else {
-                file.createNewFile();
+                if (file.createNewFile()) mainFrame.logger.info("Create new file "+file.getName()+" Successfully!");
+                else mainFrame.logger.error("Creating new file "+file.getName()+" Unsuccessfully!");
             }
         }
     }

@@ -346,7 +346,7 @@ public static void deleteToRecycleBin(String filePath) {
         System.out.println(a1);
     }
 
-    public static void main(String[] args) {
+    public static void main8(String[] args) {
 //        String replyContent = "{\n" +
 //                "  \"id\": \"chatcmpl-8lXIsOspyxkeNtEVYYQhPyoZ4SO7C\",\n" +
 //                "  \"object\": \"chat.completion\",\n" +
@@ -374,6 +374,20 @@ public static void deleteToRecycleBin(String filePath) {
         String reply = replyContent.substring(replyContent.indexOf("\",\"content\":\"")+13,replyContent.indexOf('}')-1);
         System.out.println(reply);
 }
+
+    public static void main9(String[] args) {
+        String a = "\"1\"";
+        System.out.println(a.substring(1,a.length()-1));
+    }
+
+    public static void main(String[] args) {
+        System.out.println("\n".length());
+//        String a = "\n111\n";
+//        System.out.println(searchByReplaceAll(a,"\n111"));
+    }
+    public static int searchByReplaceAll(String str,String target){
+        return (str.length() - str.replaceAll(target,"").length())/target.length();
+    }
 //    public static void main(String[] args) {
 //        Body body = new Body();
 //        body.setTemperature(1.1);

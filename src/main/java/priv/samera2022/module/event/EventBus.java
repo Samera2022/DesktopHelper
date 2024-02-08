@@ -1,9 +1,15 @@
 package priv.samera2022.module.event;
 
+import priv.samera2022.module.FontStyle;
 import priv.samera2022.module.commands.CommandHandler;
+import priv.samera2022.module.commands.registry.CommandHeads;
+import priv.samera2022.module.config.Config;
+import priv.samera2022.module.config.ConfigHandler;
 import priv.samera2022.module.event.api.Event;
 import priv.samera2022.module.event.events.EnterTypedKeyEvent;
+import priv.samera2022.module.mainFrame;
 
+import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import java.awt.event.KeyEvent;
 import java.util.*;
@@ -18,8 +24,22 @@ public class EventBus {
         if (event instanceof EnterTypedKeyEvent){
             KeyEvent keyEvent = ((EnterTypedKeyEvent) event).getKeyEvent();
             String content = ((JTextComponent)keyEvent.getSource()).getText();
+            System.out.println(ConfigHandler.CONFIG.isCommandOutput());
+            if (ConfigHandler.CONFIG.isCommandOutput()) append(content);
             ArrayList<String> commands = split(content);
             CommandHandler.handleCommands(commands);
+        }
+    }
+
+    //向原有输出框追加输出原指令
+    private static void append(String content){
+        try {
+            CommandHeads._timePrefix(mainFrame.dsdFileContent);
+            mainFrame.dsdFileContent.insertString(mainFrame.dsdFileContent.getLength(),"\n[Command] ", FontStyle.blueStyle);
+            mainFrame.dsdFileContent.insertString(mainFrame.dsdFileContent.getLength(),content, FontStyle.blackStyle);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+            mainFrame.ExceptionHandler(e);
         }
     }
 

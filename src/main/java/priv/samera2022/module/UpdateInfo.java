@@ -93,6 +93,20 @@ public class UpdateInfo {
             " - \"frame dispose\" 执行该指令后将会关闭拓展窗体，并释放一部分资源。\n" +
             "# openai指令\n" +
             " - \"openai <question>\" 执行该指令后将会联网请求openai模型<question>的内容，并等待回复。目前仅支持单一对话询问。";
+    private static final String version_0_0_4_1 =
+            " - [Released] - [0.0.4.1] - 2024-02-08 18:44\n" +
+            "## [Changed]\n" +
+            " - Command注解已被简化，仅留下name()属性。\n" +
+            " - 完善openai指令，将认证KEY等配置分离至config/gpt/default.json。\n" +
+            "## [Added]\n" +
+            " - 添加日志处理系统Logger。\n" +
+            " - 添加配置Config，以config/config.cfg的格式输出。目前支持的内容有：是否将执行的指令再次输出至输出框(command_output)\n" +
+            " - 添加exit指令。\n" +
+            " - 添加clear指令。\n" +
+            " - 添加config指令。目前支持的二级指令参数有:reload。用法见Usage。\n" +
+            "## [Usage]\n" +
+            "# config指令\n" +
+            " - \"config reload\" 执行该指令后将会重载config.cfg。";
     private static final String warns =
             "警示: " +
             "-后续指令注册时，应在Info中向COMMANDS加入该指令以进行模糊匹配！" +

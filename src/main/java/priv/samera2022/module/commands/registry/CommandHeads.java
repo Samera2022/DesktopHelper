@@ -4,6 +4,7 @@ import priv.samera2022.module.*;
 import priv.samera2022.module.annotation.Command;
 import priv.samera2022.module.gadgets.quiz.Quiz;
 import priv.samera2022.module.gadgets.web.HttpURLConnection;
+import priv.samera2022.module.gadgets.web.response.Response;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -11,8 +12,9 @@ import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Style;
 import java.awt.*;
 import java.awt.dnd.DnDConstants;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,29 +22,31 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 
-import static priv.samera2022.module.mainFrame.*;
+import static priv.samera2022.module.mainFrame.dsdFileContent;
+import static priv.samera2022.module.mainFrame.dsdInput;
 
 public class CommandHeads {
     public static JFrame frame = new JFrame();
 
     static {
-        int locX = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth() - 300;
+        int locX = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth() - 320;
         int locY = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 100;
         System.out.println("locX = " + locX);
         System.out.println("locY = " + locY);
-        frame.setBounds(300, 100, locX - 300, locY - 100);
+        frame.setBounds(310, 100, locX - 320, locY - 100);
         frame.setUndecorated(true);
         frame.enableInputMethods(false);
         JPanel totalPanel = new JPanel();
-        totalPanel.setBounds(300, 100, locX - 300, locY - 100);
+        totalPanel.setBounds(310, 100, locX - 320, locY - 100);
         JTextPane jtpFileContent = new JTextPane(dsdFileContent); // 显示文件内容区域
-        jtpFileContent.setBounds(300, 100, locX - 300, locY - 100);
+        jtpFileContent.setBounds(310, 100, locX - 320, locY - 100);
         DropTarget dtsFileContent = new DropTarget(DropTarget.FILE_CONTENT_ANALYZE, dsdFileContent, jtpFileContent);
         jtpFileContent.setEditable(false);
         ScrollPane sp2 = new ScrollPane();
         sp2.add(jtpFileContent);
-        sp2.setBounds(300, 100, locX - 300, locY - 100);
+        sp2.setBounds(310, 100, locX - 320, locY - 100);
         new java.awt.dnd.DropTarget(jtpFileContent, DnDConstants.ACTION_COPY_OR_MOVE, dtsFileContent);
         totalPanel.add(sp2);
         frame.add(totalPanel);
@@ -51,7 +55,7 @@ public class CommandHeads {
     }
 
     //commands的0是指令头，依次往下分
-    @Command(name = "print")
+    @Command
     public static void print(ArrayList<String> commands) {
 //        boolean delete = mixture.getKey();
 //        ArrayList<String> commands = mixture.getValue();
@@ -61,7 +65,7 @@ public class CommandHeads {
     }
 
     //失败！存在问题！
-    @Command(name = "store")
+    @Command
     public static void store(ArrayList<String> commands) {
 //        boolean delete = mixture.getKey();
 //        ArrayList<String> commands = mixture.getValue();
@@ -72,8 +76,22 @@ public class CommandHeads {
         formatter(true, new Mixture<>("Store Location Successfully!", FontStyle.greenStyle));
     }
 
+    @Command
+    public static void clear(ArrayList<String> commands) {
+        try {
+            dsdFileContent.remove(0, dsdFileContent.getLength());
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+            mainFrame.ExceptionHandler(e);
+        }
+    }
 
-    @Command(name = "delete")
+    @Command
+    public static void exit(ArrayList<String> commands) {
+        System.exit(0);
+    }
+
+    @Command
     public static void delete(ArrayList<String> commands) {
 //        boolean delete = mixture.getKey();
         String filePath = commands.get(1);
@@ -101,7 +119,7 @@ public class CommandHeads {
             formatter(true, new Mixture<>("File(Folder) Not Found!", FontStyle.darkRedStyle));
     }
 
-    @Command(name = "frame")
+    @Command
     public static void frame(ArrayList<String> commands) {
 //        boolean delete = mixture.getKey();
 //        ArrayList<String> commands = mixture.getValue();
@@ -126,7 +144,12 @@ public class CommandHeads {
         }
     }
 
-    @Command(name = "quiz")
+    @SuppressWarnings("unused")
+    private static int count(String str, String target) {
+        return (str.length() - str.replaceAll(target, "").length()) / target.length();
+    }
+
+    @Command
     public static void quiz(ArrayList<String> commands) {
 //        boolean delete = mixture.getKey();
 //        ArrayList<String> commands = mixture.getValue();
@@ -194,16 +217,78 @@ public class CommandHeads {
         }
     }
 
-    @Command(name = "openai")
+    @Command
     public static void openai(ArrayList<String> commands) {
-            formatter(true, new Mixture<>("请等待，正在请求中......", FontStyle.blackStyle));
-            String content = commands.get(1);
-            clearInput();
-            String response = HttpURLConnection.question(content);
-            formatter(true, new Mixture<>(response, FontStyle.blackStyle));
+        formatter(true, new Mixture<>("请等待，正在请求中......", FontStyle.blackStyle));
+        String content = commands.get(1);
+        clearInput();
+        Response response = HttpURLConnection.question(content);
+        formatter(true, new Mixture<>("CompletionTokens: " + response.getUsage().getCompletionTokens()
+                + "        " + "Model: " + response.getModel() + "        " + "Content: \n" +
+                response.getChoices().getMessage().getContent(), FontStyle.blackStyle));
     }
 
-    private static void clearInput(){
+    @Command
+    public static void config(ArrayList<String> commands) {
+        String rawSubCommand = commands.get(1);
+        String subCommand = FuzzyMatcher.fuzzyMatch(rawSubCommand, Arrays.asList("reload"));
+        switch (subCommand) {
+            case "reload":
+                priv.samera2022.module.config.ConfigHandler.reload();
+                break;
+            default:
+                formatter(true, new Mixture<>("尽管这条消息肯定不会出现在控制台上，下面的break也没有实际用途，但是还是写上了。", FontStyle.blackStyle));
+                break;
+        }
+    }
+
+    @Command
+    public static void analyze(ArrayList<String> commands) throws IOException {
+        String path = commands.get(1);
+        String content = FileHandler.read(path);
+        File file = new File(path);
+        FileInputStream fis = new FileInputStream(file.getAbsolutePath());
+        byte[] buf = new byte[1024];
+        int len;
+        ByteBuffer bb = ByteBuffer.allocate((int) file.length());
+        // 向内存中写数据
+        while ((len = fis.read(buf)) > -1) {
+            bb.put(buf, 0, len);
+        }
+        fis.close();
+        // 在控件中显示文件内容，注意文件编码问题
+        InputStreamReader isr = new InputStreamReader(new ByteArrayInputStream(bb.array()), StandardCharsets.UTF_8);
+        Scanner sc = new Scanner(isr);
+        int line = 0;
+        while (sc.hasNext()) {
+            line++;
+            String t = sc.nextLine();
+            if (t.indexOf("Thread: ") == 0) {
+                switch (t) {
+                    case "Thread: Render Thread":
+                        formatter(true, new Mixture<>("渲染进程(Render Thread)报错！\n", FontStyle.darkRedStyle));
+                        if (content.contains("Optifine"))
+                            formatter(true, new Mixture<>("Optifine已安装！\n", FontStyle.darkRedStyle));
+                        else
+                            formatter(true, new Mixture<>("Optifine未安装。\n", FontStyle.blackStyle));
+                        break;
+                    case "Thread: Client thread":
+                        formatter(true, new Mixture<>("客户端进程(Client Thread)报错！\n", FontStyle.blackStyle));
+                        break;
+                }
+            }
+            if (t.contains("LE") || t.contains("LCHIJE")) {
+                String[] arr = t.split("\\|");
+                formatter(true, new Mixture<>("\n异常可能点：" +
+                                "\n模组注册名: " + arr[2] + "\n模组名称: " + arr[4], FontStyle.darkRedStyle),
+                        new Mixture<>("\n分析指示：可能该模组出现异常或存在模组互相冲突\n" +
+                                "报错切片如下：\n" + t + "\n" +
+                                "该异常位于第" + line + "行", FontStyle.blackStyle));
+            }
+        }
+    }
+
+    private static void clearInput() {
         try {
             dsdInput.remove(0, dsdInput.getLength());
             dsdInput.insertString(0, mainFrame.inputAsst, FontStyle.plainStyle);

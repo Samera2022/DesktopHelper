@@ -23,7 +23,7 @@ public class EnterKeyListener implements KeyListener {
             if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                 EventBus.register(new EnterTypedKeyEvent(e));
                 isCommand = true;
-                String content = ((JTextComponent) e.getSource()).getText();
+//                String content = ((JTextComponent) e.getSource()).getText();
                 //这里可能会浪费性能
 //                if (content.contains("frame b")) {
 //                    dsdInput.remove(0, dsdInput.getLength());

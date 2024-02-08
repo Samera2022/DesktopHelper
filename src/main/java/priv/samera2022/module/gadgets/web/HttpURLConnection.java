@@ -1,9 +1,13 @@
 package priv.samera2022.module.gadgets.web;
 
 import priv.samera2022.module.Mixture;
+import priv.samera2022.module.gadgets.web.config.Config;
+import priv.samera2022.module.gadgets.web.config.ConfigHandler;
 import priv.samera2022.module.gadgets.web.request.Body;
 import priv.samera2022.module.gadgets.web.request.Header;
 import priv.samera2022.module.gadgets.web.request.Message;
+import priv.samera2022.module.gadgets.web.response.Response;
+import priv.samera2022.module.mainFrame;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -11,21 +15,28 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class HttpURLConnection {
-    public static void main(String[] args) {
-        System.out.println("\"content\": \"".length());
-    }
-    public static String question(String content) {
+    public static Response question(String content) {
+        Config config = ConfigHandler.read("default");
         Body body = new Body();
-        body.setModel("gpt-3.5-turbo");
-        body.setTemperature(0.7);
+        body.setModel(config.getModel());
+        if (config.getFrequencyPenalty()!=null) body.setFrequencyPenalty(config.getFrequencyPenalty());
+        if (config.getLogitBias()!=null) body.setLogitBias(config.getLogitBias());
+        if (config.getMaxTokens()!=null) body.setMaxTokens(config.getMaxTokens());
+        if (config.getN()!=null) body.setN(config.getN());
+        if (config.getPresencePenalty()!=null) body.setPresencePenalty(config.getPresencePenalty());
+        if (config.getStop()!=null) body.setStop(config.getStop());
+        if (config.getStream()!=null) body.setStream(config.getStream());
+        if (config.getTemperature()!=null) body.setTemperature(config.getTemperature());
+        if (config.getTopP()!=null) body.setTopP(config.getTopP());
+        if (config.getUser()!=null) body.setUser(config.getUser());
+
         Message message = new Message("user",content);
         body.setMessage(message);
-        Mixture<Integer,String> response = post("https://api.chatanywhere.com.cn/v1/chat/completions",new Header("sk-CBoy5cjtjy6kyWl22c4SYK4WuyCkeIw4f6Qh13BrWJE4pbYN"),body);
-        String replyContent = response.getValue();
-        String reply = replyContent.substring(replyContent.indexOf("\",\"content\":\"")+13,replyContent.indexOf('}')-1);
-        System.out.println(reply);
-        System.out.println(response.getValue());
-        return reply;
+
+        Mixture<Integer,String> response = post("https://api.chatanywhere.com.cn/v1/chat/completions",new Header(config.getAuthorization()),body);
+        mainFrame.logger.debug("Response Code: "+response.getKey());
+        mainFrame.logger.info("Receive Response: "+response.getValue());
+        return Convert.convert(response.getValue());
     }
 
     public static Mixture<Integer,String> post(String Url, Header header, Body body) {

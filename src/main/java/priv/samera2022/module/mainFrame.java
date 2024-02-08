@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class mainFrame {
+    public static Logger logger = new Logger();
 
     public static DefaultStyledDocument dsdInput = new DefaultStyledDocument(FontStyle.sc);
     public static DefaultStyledDocument dsdFileContent = new DefaultStyledDocument(FontStyle.sc);
@@ -27,6 +28,7 @@ public class mainFrame {
     public static final String inputAsst = "-->HERE TO INPUT<--";
 
     public static void main(String[] args) throws BadLocationException {
+        FileHandler.init();
         frame();
     }
 
