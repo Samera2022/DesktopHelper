@@ -1,6 +1,6 @@
 package priv.samera2022.module.notification;
 
-import priv.samera2022.module.FileHandler;
+import priv.samera2022.module.file.FileHandler;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

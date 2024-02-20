@@ -1,4 +1,4 @@
-package priv.samera2022.module.gadgets.web.config;
+package priv.samera2022.module.gadgets.gpt.config;
 
 public class Config {
     private String authorization;

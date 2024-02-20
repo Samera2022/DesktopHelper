@@ -1,6 +1,6 @@
-package priv.samera2022.module.gadgets.web.config;
+package priv.samera2022.module.gadgets.gpt.config;
 
-import priv.samera2022.module.FileHandler;
+import priv.samera2022.module.file.FileHandler;
 import java.util.HashMap;
 
 public class ConfigHandler {

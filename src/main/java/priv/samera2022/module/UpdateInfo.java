@@ -107,6 +107,28 @@ public class UpdateInfo {
             "## [Usage]\n" +
             "# config指令\n" +
             " - \"config reload\" 执行该指令后将会重载config.cfg。";
+    private static final String version_0_0_4_2 =
+            " - [Released] - [0.0.4.2] - 2024-02-20 13:22\n" +
+            "## [Changed]\n" +
+            " - 完善了mainFrame.ExceptionHandler()方法，但并未进行相关测试。\n" +
+            " - web包更名为gpt包，原web包下HttpURLConnection.java更名为Connection.java\n" +
+            "## [Added]\n" +
+//            " - 增加config/ConfigHandler.java对于过时配置文件的逻辑，选择动态添加新的键值对并将值设为Updated。\n" + //没啥用，因为在read的时候还是要设置属性的
+            " - 增加analyze指令。\n" +
+            " - 增加downloadModpack指令。\n" +
+            "## [Usage]\n" +
+            "# downloadModpack指令\n" +
+            " - \"downloadModpack key <zipPath> <targetPath>\" 执行该指令后将会从zipPath所指向的文件进行模组补全下载，保存至targetPath。同时将配置等文件夹解压至targetPath中。" +
+            "请注意：key下载需要提供curseforge_api_key,即cf_api_key。配置在config.cfg中填入。\n"+
+            " - \"downloadModpack browser <zipPath>\" 执行该指令后将会从zipPath所指向的文件进行浏览器模组补全下载，该操作不需要提供curseforge_api_key。目前没有设置配置等文件的解压，" +
+            "因为涉及不同浏览器的保存地址，所以暂时不做相关处理。\n" +
+            "# analyze指令\n" +
+            " - \"analyze <filePath>\" 执行该指令后将会读取报错日志，并从已设置的报错内容特征进行检索。目前仅支持一小部分报错分析，更多分析请等待后续版本。\n" +
+            "## [To-do]\n" +
+            " - 考虑添加依赖缺失报错的模组下载处理逻辑。\n" +
+            " - 或许应当考虑将关于mc的指令全部放在一级指令mc下面？\n" +
+            "## [Warns]\n" +
+            " - Logger的线程提示有问题，需要解决！";
     private static final String warns =
             "警示: " +
             "-后续指令注册时，应在Info中向COMMANDS加入该指令以进行模糊匹配！" +
@@ -116,6 +138,6 @@ public class UpdateInfo {
             "-在各个Listener中，你其实有很多变量都是可以调用的。很多时候如果这个方法用这个变量不行，可以试试用另外一个方法调用另外一个变量来解决。" +
             "比如说在模糊判断输出Couldn't find that command! Guess...的时候，用message会导致时间和内容吞并，但是用dsdFileContent附加时间就可以解决。";
     public static void main(String[] args) {
-        System.out.println(version_0_0_4);
+        System.out.println(version_0_0_4_2);
     }
 }

@@ -1,12 +1,12 @@
-package priv.samera2022.module.gadgets.web;
+package priv.samera2022.module.gadgets.gpt;
 
 //import out.json.jParser;
 
 
-import priv.samera2022.module.gadgets.web.request.Message;
-import priv.samera2022.module.gadgets.web.response.Choices;
-import priv.samera2022.module.gadgets.web.response.Response;
-import priv.samera2022.module.gadgets.web.response.Usage;
+import priv.samera2022.module.gadgets.gpt.request.Message;
+import priv.samera2022.module.gadgets.gpt.response.Choices;
+import priv.samera2022.module.gadgets.gpt.response.Response;
+import priv.samera2022.module.gadgets.gpt.response.Usage;
 import priv.samera2022.module.mainFrame;
 
 import java.util.HashMap;

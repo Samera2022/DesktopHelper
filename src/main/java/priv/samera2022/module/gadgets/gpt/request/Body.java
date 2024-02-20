@@ -1,4 +1,4 @@
-package priv.samera2022.module.gadgets.web.request;
+package priv.samera2022.module.gadgets.gpt.request;
 
 @SuppressWarnings("unused")
 public class Body {

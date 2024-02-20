@@ -3,6 +3,7 @@ package priv.samera2022.module;
 //import com.sun.jna.platform.FileUtils;
 
 import priv.samera2022.module.commands.registry.CommandHeads;
+import priv.samera2022.module.file.FileHandler;
 import priv.samera2022.module.keylisteners.EnterKeyListener;
 import priv.samera2022.module.notification.Notification;
 import priv.samera2022.module.notification.NotificationFileHandler;
@@ -18,6 +19,7 @@ import java.awt.event.FocusListener;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class mainFrame {
     public static Logger logger = new Logger();
@@ -27,9 +29,13 @@ public class mainFrame {
     public static DefaultStyledDocument dsdNotification = new DefaultStyledDocument(FontStyle.sc);
     public static final String inputAsst = "-->HERE TO INPUT<--";
 
-    public static void main(String[] args) throws BadLocationException {
-        FileHandler.init();
-        frame();
+    public static void main(String[] args){
+        try {
+            frame();
+        } catch (BadLocationException e){
+            e.printStackTrace();
+            mainFrame.ExceptionHandler(e);
+        }
     }
 
     public static void frame() throws BadLocationException {
@@ -186,7 +192,14 @@ public class mainFrame {
     }
 
     public static void ExceptionHandler(Exception exception){
-
+        CommandHeads.formatter(false,new Mixture<>("Cause: ",FontStyle.blackStyle));
+        CommandHeads.formatter(false,new Mixture<>(exception.getCause().getMessage(),FontStyle.darkRedStyle));
+        CommandHeads.formatter(false,new Mixture<>("LocalizedMessage: ",FontStyle.blackStyle));
+        CommandHeads.formatter(false,new Mixture<>(exception.getLocalizedMessage(),FontStyle.darkRedStyle));
+        CommandHeads.formatter(false,new Mixture<>("StackTrace: ",FontStyle.blackStyle));
+        CommandHeads.formatter(false,new Mixture<>(Arrays.toString(exception.getStackTrace()),FontStyle.darkRedStyle));
+        CommandHeads.formatter(false,new Mixture<>("Suppressed: ",FontStyle.blackStyle));
+        CommandHeads.formatter(false,new Mixture<>(Arrays.toString(exception.getSuppressed()),FontStyle.darkRedStyle));
     }
 
 }

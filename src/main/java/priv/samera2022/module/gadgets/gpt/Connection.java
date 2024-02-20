@@ -1,12 +1,12 @@
-package priv.samera2022.module.gadgets.web;
+package priv.samera2022.module.gadgets.gpt;
 
 import priv.samera2022.module.Mixture;
-import priv.samera2022.module.gadgets.web.config.Config;
-import priv.samera2022.module.gadgets.web.config.ConfigHandler;
-import priv.samera2022.module.gadgets.web.request.Body;
-import priv.samera2022.module.gadgets.web.request.Header;
-import priv.samera2022.module.gadgets.web.request.Message;
-import priv.samera2022.module.gadgets.web.response.Response;
+import priv.samera2022.module.gadgets.gpt.config.Config;
+import priv.samera2022.module.gadgets.gpt.config.ConfigHandler;
+import priv.samera2022.module.gadgets.gpt.request.Body;
+import priv.samera2022.module.gadgets.gpt.request.Header;
+import priv.samera2022.module.gadgets.gpt.request.Message;
+import priv.samera2022.module.gadgets.gpt.response.Response;
 import priv.samera2022.module.mainFrame;
 
 import java.net.URI;
@@ -14,7 +14,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class HttpURLConnection {
+public class Connection {
     public static Response question(String content) {
         Config config = ConfigHandler.read("default");
         Body body = new Body();
@@ -49,7 +49,6 @@ public class HttpURLConnection {
                 .header("Content-Type", header.getContentType()) // 设置请求头
                 .POST(HttpRequest.BodyPublishers.ofString(body.toString())) // 设置请求体
                 .build();
-
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 

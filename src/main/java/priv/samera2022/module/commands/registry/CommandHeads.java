@@ -2,9 +2,14 @@ package priv.samera2022.module.commands.registry;
 
 import priv.samera2022.module.*;
 import priv.samera2022.module.annotation.Command;
+import priv.samera2022.module.config.ConfigHandler;
+import priv.samera2022.module.file.FileHandler;
+import priv.samera2022.module.gadgets.gpt.Connection;
+import priv.samera2022.module.gadgets.gpt.response.Response;
+import priv.samera2022.module.gadgets.mc.modpack.ModpackHandler;
+import priv.samera2022.module.gadgets.mc.modpack.download.Concept;
+import priv.samera2022.module.gadgets.mc.modpack.download.key.Download;
 import priv.samera2022.module.gadgets.quiz.Quiz;
-import priv.samera2022.module.gadgets.web.HttpURLConnection;
-import priv.samera2022.module.gadgets.web.response.Response;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -22,6 +27,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Scanner;
 
 import static priv.samera2022.module.mainFrame.dsdFileContent;
@@ -222,7 +228,7 @@ public class CommandHeads {
         formatter(true, new Mixture<>("请等待，正在请求中......", FontStyle.blackStyle));
         String content = commands.get(1);
         clearInput();
-        Response response = HttpURLConnection.question(content);
+        Response response = Connection.question(content);
         formatter(true, new Mixture<>("CompletionTokens: " + response.getUsage().getCompletionTokens()
                 + "        " + "Model: " + response.getModel() + "        " + "Content: \n" +
                 response.getChoices().getMessage().getContent(), FontStyle.blackStyle));
@@ -243,49 +249,99 @@ public class CommandHeads {
     }
 
     @Command
-    public static void analyze(ArrayList<String> commands) throws IOException {
-        String path = commands.get(1);
-        String content = FileHandler.read(path);
-        File file = new File(path);
-        FileInputStream fis = new FileInputStream(file.getAbsolutePath());
-        byte[] buf = new byte[1024];
-        int len;
-        ByteBuffer bb = ByteBuffer.allocate((int) file.length());
-        // 向内存中写数据
-        while ((len = fis.read(buf)) > -1) {
-            bb.put(buf, 0, len);
-        }
-        fis.close();
-        // 在控件中显示文件内容，注意文件编码问题
-        InputStreamReader isr = new InputStreamReader(new ByteArrayInputStream(bb.array()), StandardCharsets.UTF_8);
-        Scanner sc = new Scanner(isr);
-        int line = 0;
-        while (sc.hasNext()) {
-            line++;
-            String t = sc.nextLine();
-            if (t.indexOf("Thread: ") == 0) {
-                switch (t) {
-                    case "Thread: Render Thread":
-                        formatter(true, new Mixture<>("渲染进程(Render Thread)报错！\n", FontStyle.darkRedStyle));
-                        if (content.contains("Optifine"))
-                            formatter(true, new Mixture<>("Optifine已安装！\n", FontStyle.darkRedStyle));
-                        else
-                            formatter(true, new Mixture<>("Optifine未安装。\n", FontStyle.blackStyle));
-                        break;
-                    case "Thread: Client thread":
-                        formatter(true, new Mixture<>("客户端进程(Client Thread)报错！\n", FontStyle.blackStyle));
-                        break;
+    public static void analyze(ArrayList<String> commands) {
+        try {
+            String path = commands.get(1);
+            String content = FileHandler.read(path);
+            File file = new File(path);
+            FileInputStream fis = new FileInputStream(file.getAbsolutePath());
+            byte[] buf = new byte[1024];
+            int len;
+            ByteBuffer bb = ByteBuffer.allocate((int) file.length());
+            // 向内存中写数据
+            while ((len = fis.read(buf)) > -1) {
+                bb.put(buf, 0, len);
+            }
+            fis.close();
+            // 在控件中显示文件内容，注意文件编码问题
+            InputStreamReader isr = new InputStreamReader(new ByteArrayInputStream(bb.array()), StandardCharsets.UTF_8);
+            Scanner sc = new Scanner(isr);
+            int line = 0;
+            while (sc.hasNext()) {
+                line++;
+                String t = sc.nextLine();
+                if (t.indexOf("Thread: ") == 0) {
+                    switch (t) {
+                        case "Thread: Render Thread":
+                            formatter(true, new Mixture<>("渲染进程(Render Thread)报错！\n", FontStyle.darkRedStyle));
+                            if (content.contains("Optifine"))
+                                formatter(true, new Mixture<>("Optifine已安装！\n", FontStyle.darkRedStyle));
+                            else
+                                formatter(true, new Mixture<>("Optifine未安装。\n", FontStyle.blackStyle));
+                            break;
+                        case "Thread: Client thread":
+                            formatter(true, new Mixture<>("客户端进程(Client Thread)报错！\n", FontStyle.blackStyle));
+                            break;
+                    }
+                }
+                if (t.contains("LE") || t.contains("LCHIJE")) {
+                    String[] arr = t.split("\\|");
+                    formatter(true, new Mixture<>("\n异常可能点：" +
+                                    "\n模组注册名: " + arr[2] + "\n模组名称: " + arr[4], FontStyle.darkRedStyle),
+                            new Mixture<>("\n分析指示：可能该模组出现异常或存在模组互相冲突\n" +
+                                    "报错切片如下：\n" + t + "\n" +
+                                    "该异常位于第" + line + "行", FontStyle.blackStyle));
+                } else if (t.contains("unable to find valid certification path to requested target")||t.contains("PKIX path building failed")) {
+                    formatter(true, new Mixture<>("\n异常可能点：Java出现异常。",FontStyle.darkRedStyle), new Mixture<>(
+                            "可能原因（仅供参考）：这个问题的根本原因是你安装JDK时，Java\\jar 1.8.0_141\\lib\\ext\\里面缺少了一个安全凭证jssecacerts证书文件，通过运行下面类可以生成证书，将生成的证书放在Java\\jar 1.8.0_141\\lib\\ext\\这个目录下，重启编译器就可以解决。\n" +
+                            "可能的解决办法：" +
+                            "1. (实践可行)重新安装Java" +
+                            "2. 生成安全证书并放入jre相应路径下，参照网页https://blog.csdn.net/weixin_44519124/article/details/119909354",FontStyle.blackStyle));
                 }
             }
-            if (t.contains("LE") || t.contains("LCHIJE")) {
-                String[] arr = t.split("\\|");
-                formatter(true, new Mixture<>("\n异常可能点：" +
-                                "\n模组注册名: " + arr[2] + "\n模组名称: " + arr[4], FontStyle.darkRedStyle),
-                        new Mixture<>("\n分析指示：可能该模组出现异常或存在模组互相冲突\n" +
-                                "报错切片如下：\n" + t + "\n" +
-                                "该异常位于第" + line + "行", FontStyle.blackStyle));
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
+    @Command
+    public static void downloadModpacks(ArrayList<String> commands) {
+        String rawSubCommand = commands.get(1);
+        String subCommand = FuzzyMatcher.fuzzyMatch(rawSubCommand, Arrays.asList("key","browser"));
+        if (ConfigHandler.CONFIG.getCf_api_key()!=null) {
+            ModpackHandler.handle(commands.get(2),commands.get(3),subCommand);
+            switch (subCommand) {
+                case "key":
+                    //zip在前，目录在后
+                    File[] filesN = new File(commands.get(3)+"\\necessary\\").listFiles();
+                    File[] filesO = new File(commands.get(3)+"\\optional\\").listFiles();
+                    int optionalMods = filesO==null ? 0 : filesO.length;
+                    if (filesN != null && filesN.length > 0) {
+                        formatter(true,new Mixture<>("检验中，存在下载内容。",FontStyle.blackStyle));
+                        int mods = priv.samera2022.module.gadgets.mc.modpack.download.browser.Download.getNum(commands.get(2));
+                        if (filesN.length+optionalMods==mods) {
+                            formatter(true,new Mixture<>("模组全部下载完成，共"+mods+"个！",FontStyle.greenStyle));
+                        } else {
+                            formatter(true,new Mixture<>("模组下载未完成，应有"+mods+"个，实有"+(filesN.length+optionalMods)+"个！",FontStyle.greenStyle));
+                            //TODO 缺失文件输出本地检查以后再写
+                        }
+                    } else {
+                        formatter(true,new Mixture<>("不存在下载内容，下载失败！",FontStyle.darkRedStyle));
+                    }
+                    if (Download.ERROR_LIST.size()!=0) {
+                        formatter(true,new Mixture<>("下载未完成，失败文件列表如下所示：",FontStyle.darkRedStyle));
+                        for (HashMap<String,Object> map : Download.ERROR_LIST){
+                            formatter(true, new Mixture<>("\nmodId: "+map.get(Concept.PROJECT_ID)+"\nfileId: "+map.get(Concept.FILE_ID)+"\nrequired: "+map.get(Concept.REQUIRED)+"\n--------",FontStyle.blackStyle));
+                        }
+                    }
+                    break;
+                case "browser":
+//                    priv.samera2022.module.gadgets.mc.modpack.download.browser.Download.downloadModpacks(commands.get(2));
+                    break;
+                default:
+                    break;
+            }
+        } else priv.samera2022.module.gadgets.mc.modpack.download.browser.Download.downloadModpacks(commands.get(2));
     }
 
     private static void clearInput() {
@@ -311,8 +367,9 @@ public class CommandHeads {
      * 而这个数组在可变参数的函数中被套上了Mixture<String,Style>的泛型，就可以使用@SafeVarargs提示已经除去了堆污染和泛型错误。
      * 简单地来解释，就是 多个抽象元素(具体元素也可以，只不过cast了也一样)->调用可变参数函数->(在可变参数函数中)形成数组，并在这个时候对数组加上泛型cast->警告用@SafeVarargs消除
      */
+
     @SafeVarargs
-    private static void formatter(boolean delete, Mixture<String, Style>... objects) {
+    public static void formatter(boolean delete, Mixture<String, Style>... objects) {
         output(objects, delete);
     }
 

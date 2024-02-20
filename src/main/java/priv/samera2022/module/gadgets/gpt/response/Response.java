@@ -1,4 +1,4 @@
-package priv.samera2022.module.gadgets.web.response;
+package priv.samera2022.module.gadgets.gpt.response;
 
 public class Response {
     private String id;

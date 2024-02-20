@@ -1,6 +1,6 @@
 package priv.samera2022.module.gadgets.quiz;
 
-import priv.samera2022.module.FileHandler;
+import priv.samera2022.module.file.FileHandler;
 import priv.samera2022.module.mainFrame;
 
 import javax.swing.*;

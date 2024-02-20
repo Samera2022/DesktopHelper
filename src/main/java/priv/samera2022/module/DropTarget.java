@@ -53,7 +53,7 @@ public class DropTarget extends DropTargetAdapter {
                 for (File file : list) {
                     switch (code) {
                         case INPUT_ANALYZE:
-                            dsd.insertString(dsd.getLength(), file.getAbsolutePath(), FontStyle.plainStyle);
+                            dsd.insertString(dsd.getLength(), file.getAbsolutePath().replace("\"","/"), FontStyle.plainStyle);
                             break;
                         case FILE_CONTENT_ANALYZE:
 //                            sb.append(file.getAbsolutePath() + "\r\n");

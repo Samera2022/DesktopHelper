@@ -1,6 +1,6 @@
-package priv.samera2022.module.gadgets.web.response;
+package priv.samera2022.module.gadgets.gpt.response;
 
-import priv.samera2022.module.gadgets.web.request.Message;
+import priv.samera2022.module.gadgets.gpt.request.Message;
 
 public class Choices {
     private Integer index;
