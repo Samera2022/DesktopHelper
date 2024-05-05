@@ -141,7 +141,7 @@ public class UpdateInfo {
             "## [Usage]\n" +
             "# quiz start <quizName>指令\n" +
             " - \"quiz start <quizName> <isBreak> <useSimilarity>\" 该指令新增<isBreak>和<useSimilarity>参数。" +
-            "其中，isBreak参数可选stop或continue，分别对应回答错误即停止和回答错误仍继续。useSimilarity旨在应对具有小范围开放性的填空，" +
+            "\n其中，isBreak参数可选stop或continue，分别对应回答错误即停止和回答错误仍继续。\nuseSimilarity旨在应对具有小范围开放性的填空，" +
             "使用一定的相似算法来判断所填入的答案与预设答案是否相关。\n" +
             "# AminoAcidQuiz指令\n" +
             " - \"AminoAcidQuiz plain <isBreak>\" 执行该指令后将会启动AminoAcidQuiz普通测试。\n"+
@@ -149,7 +149,7 @@ public class UpdateInfo {
             "## [To-do]\n" +
             " - 现在有支持显示图片的窗体了，之后或许可以考虑将其整合进Quiz中，实现循环滚大题的操作。\n" +
             " - Quiz之后应当考虑出题算法，使答对次数多的题目减少出现，答对次数少或出现次数少的题目增多出现。\n" +
-            " - Quiz应当考虑多道题目共用一道大题干的情况，等到多道题目轮流答题完成再滚下一个大题或小题。目前思路如下：" +
+            " - Quiz应当考虑多道题目共用一道大题干的情况，等到多道题目轮流答题完成再滚下一个大题或小题。目前思路如下：\n" +
             "显示一道大题题干，再显示一个输入窗体。键入第一小题的答案后，出现第二小题的输入窗体......直到所有小题答题结束，" +
             "再统一对答案进行评价打分。\n" +
             " - label指令加入待办列表。\n" +
