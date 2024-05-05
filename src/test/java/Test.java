@@ -3,9 +3,19 @@ import priv.samera2022.module.mainFrame;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Test {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
+        ArrayList<File> drives = new ArrayList<>();
+        drives.addAll(Arrays.asList(File.listRoots()));
+        for (int i = 0; i<drives.size(); i++){
+            File drive = drives.get(i);
+            System.out.println(drive.getPath());
+        }
+    }
+    public static void main2(String[] args) throws IOException {
 //        fixError(new File("D:/_S_A_M/Desktop/ac"),true);
 
 

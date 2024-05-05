@@ -4,6 +4,7 @@ import priv.samera2022.module.*;
 import priv.samera2022.module.annotation.Command;
 import priv.samera2022.module.config.ConfigHandler;
 import priv.samera2022.module.file.FileHandler;
+import priv.samera2022.module.gadgets.aa_quiz.AminoAcidQuiz;
 import priv.samera2022.module.gadgets.gpt.Connection;
 import priv.samera2022.module.gadgets.gpt.response.Response;
 import priv.samera2022.module.gadgets.mc.modpack.ModpackHandler;
@@ -156,6 +157,27 @@ public class CommandHeads {
     }
 
     @Command
+    public static void AminoAcidQuiz(ArrayList<String> commands){
+        String rawSubCommand = commands.get(1);
+        String subCommand = FuzzyMatcher.fuzzyMatch(rawSubCommand, Arrays.asList("plain", "structure"));
+        String rawSubCommand2 = commands.get(3);
+        String subCommand2 = FuzzyMatcher.fuzzyMatch(rawSubCommand2, Arrays.asList("stop", "continue"));
+        boolean isBreak = subCommand2.equals("stop");
+        int time = 0;
+        switch (subCommand) {
+            case "plain":
+                time = AminoAcidQuiz.plainQuiz(isBreak);
+                break;
+            case "structure":
+                time = AminoAcidQuiz.structureQuiz(isBreak);
+                break;
+            default:
+                break;
+        }
+        formatter(true, new Mixture<>("答题结束！这次一共"+(isBreak?"答对":"作答") + time + "次，下次继续努力吧！", FontStyle.greenStyle));
+    }
+
+    @Command
     public static void quiz(ArrayList<String> commands) {
 //        boolean delete = mixture.getKey();
 //        ArrayList<String> commands = mixture.getValue();
@@ -170,16 +192,30 @@ public class CommandHeads {
                 else formatter(true, new Mixture<>("创建失败!", FontStyle.darkRedStyle));
                 break;
             case "start":
-                String result = Quiz.examine(commands.get(2));
-                boolean digit = false;
-                for (char c : result.toCharArray()) {
-                    if (Character.isDigit(c)) {
-                        digit = true;
+                String rawSubCommand2 = commands.get(3);
+                String subCommand2 = FuzzyMatcher.fuzzyMatch(rawSubCommand2, Arrays.asList("stop", "continue"));
+                String rawSubCommand3 = commands.get(4);
+                String subCommand3 = FuzzyMatcher.fuzzyMatch(rawSubCommand3, Arrays.asList("true", "false"));
+                String result = Quiz.examine(commands.get(2),subCommand2.equals("stop"),subCommand3.equals("true"));
+                switch (subCommand2) {
+                    case "stop":
+                        boolean digit = false;
+                        for (char c : result.toCharArray()) {
+                            if (Character.isDigit(c)) {
+                                digit = true;
+                                break;
+                            }
+                        }
+                        if (digit) formatter(true, new Mixture<>("这次一共答对了" + result + "次，下次继续努力吧！", FontStyle.greenStyle));
+                        else formatter(true, new Mixture<>(result, FontStyle.darkRedStyle));
+                        //该种情况是由于反馈了“测试不存在”所导致的。应当考虑整合到start就进行判断
                         break;
-                    }
+                    case "continue":
+                        formatter(true, new Mixture<>("答题结束！这次一共作答" + result + "次，下次继续努力吧！", FontStyle.greenStyle));
+                        break;
+                    default:
+                        break;
                 }
-                if (digit) formatter(true, new Mixture<>("这次一共答对了" + result + "次，下次继续努力吧！", FontStyle.greenStyle));
-                else formatter(true, new Mixture<>(result, FontStyle.darkRedStyle));
                 break;
             case "delete":
                 File file1 = new File(FileHandler.FOLDER_PATH + FileHandler.QUIZ_PATH + commands.get(2) + ".txt");
@@ -342,6 +378,11 @@ public class CommandHeads {
                     break;
             }
         } else priv.samera2022.module.gadgets.mc.modpack.download.browser.Download.downloadModpacks(commands.get(2));
+    }
+
+    @Command
+    public static void cookie(){
+
     }
 
     private static void clearInput() {

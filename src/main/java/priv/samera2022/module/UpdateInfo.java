@@ -129,6 +129,32 @@ public class UpdateInfo {
             " - 或许应当考虑将关于mc的指令全部放在一级指令mc下面？\n" +
             "## [Warns]\n" +
             " - Logger的线程提示有问题，需要解决！";
+    //Todo 应当尝试直接填入Thread？
+    //TODO CommandHeads.java downloadModpacks()缺失文件输出以后再写
+    private static final String version_0_0_4_3 =
+            " - [Released] - [0.0.4.3] - 2024-05-05 15:00\n" +
+            "## [Changed]\n" +
+            " - 修改了quiz的一些逻辑，使其更加符合使用需要。\n" +
+            "## [Added]\n" +
+            " - 增加AminoAcidQuiz指令。\n" +
+            " - quiz start <quizName> 指令增加四级，五级指令。\n" +
+            "## [Usage]\n" +
+            "# quiz start <quizName>指令\n" +
+            " - \"quiz start <quizName> <isBreak> <useSimilarity>\" 该指令新增<isBreak>和<useSimilarity>参数。" +
+            "其中，isBreak参数可选stop或continue，分别对应回答错误即停止和回答错误仍继续。useSimilarity旨在应对具有小范围开放性的填空，" +
+            "使用一定的相似算法来判断所填入的答案与预设答案是否相关。\n" +
+            "# AminoAcidQuiz指令\n" +
+            " - \"AminoAcidQuiz plain <isBreak>\" 执行该指令后将会启动AminoAcidQuiz普通测试。\n"+
+            " - \"AminoAcidQuiz structure <isBreak>\" 执行该指令后将会启动AminoAcidQuiz结构式测试。\n" +
+            "## [To-do]\n" +
+            " - 现在有支持显示图片的窗体了，之后或许可以考虑将其整合进Quiz中，实现循环滚大题的操作。\n" +
+            " - Quiz之后应当考虑出题算法，使答对次数多的题目减少出现，答对次数少或出现次数少的题目增多出现。\n" +
+            " - Quiz应当考虑多道题目共用一道大题干的情况，等到多道题目轮流答题完成再滚下一个大题或小题。目前思路如下：" +
+            "显示一道大题题干，再显示一个输入窗体。键入第一小题的答案后，出现第二小题的输入窗体......直到所有小题答题结束，" +
+            "再统一对答案进行评价打分。\n" +
+            " - label指令加入待办列表。\n" +
+            "## [Warns]\n" +
+            " - \"quiz start <quizName> <isBreak> <useSimilarity>\" 指令中的<useSimilarity>默认改为false，因为相似算法仍然一定存在问题。";
     private static final String warns =
             "警示: " +
             "-后续指令注册时，应在Info中向COMMANDS加入该指令以进行模糊匹配！" +
@@ -138,6 +164,6 @@ public class UpdateInfo {
             "-在各个Listener中，你其实有很多变量都是可以调用的。很多时候如果这个方法用这个变量不行，可以试试用另外一个方法调用另外一个变量来解决。" +
             "比如说在模糊判断输出Couldn't find that command! Guess...的时候，用message会导致时间和内容吞并，但是用dsdFileContent附加时间就可以解决。";
     public static void main(String[] args) {
-        System.out.println(version_0_0_4_2);
+        System.out.println(version_0_0_4_3);
     }
 }

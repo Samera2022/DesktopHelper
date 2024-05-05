@@ -18,7 +18,7 @@ public class Quiz {
 
     public static void main(String[] args) {
 //        input("test");
-        examine("test");
+        examine("test",false,true);
 //        examine("a");
 //        File f = new File(FileHandler.FOLDER_PATH+FileHandler.QUIZ_PATH+"test"+".txt");
 //        input("test");
@@ -28,7 +28,7 @@ public class Quiz {
 
 //examine模块
 
-    public static String examine(String quizName) {
+    public static String examine(String quizName, boolean isBreak, boolean useSimilarity) {
         File file = new File(FileHandler.FOLDER_PATH + FileHandler.QUIZ_PATH + quizName + ".txt");
         if (!file.exists()) {
             return "该测试不存在！";
@@ -41,18 +41,28 @@ public class Quiz {
                 String answer = JOptionPane.showInputDialog(null, question.getTips(), "第" + time + "次", JOptionPane.QUESTION_MESSAGE);        //输入对话框
                 if (answer == null) {
                     if (time != 1) {
-                        JOptionPane.showMessageDialog(null, "答案是" + question.getAnswer() + "！你这次答对了" + time + "次。", "回答结束", JOptionPane.WARNING_MESSAGE);    //消息对话框
+                        JOptionPane.showMessageDialog(null, "答案是" + question.getAnswer() + "！你这次"+(isBreak?"答对了":"作答了") + time + "次。", "回答结束", JOptionPane.WARNING_MESSAGE);    //消息对话框
                     }
-                    break;
+                    if (isBreak) break;
                 } else {
-                    if (!answer.equals(question.getAnswer())) {
+                    boolean plainFalse = !answer.equals(question.getAnswer());
+                    boolean similarFalse = isSimilar(answer,question.getAnswer());
+
+                    //similarity方法有问题
+                    useSimilarity = false;
+
+                    boolean outcome;
+                    if (useSimilarity) outcome = similarFalse;
+                    else outcome = plainFalse;
+                    if (outcome) {
                         if (time != 1) {
                             JOptionPane.showMessageDialog(null, "回答错了！答案应该是" + question.getAnswer() + "！你这次答对了" + time + "次，下次继续努力吧！", "回答错误", JOptionPane.WARNING_MESSAGE);    //消息对话框
                         } else
                             JOptionPane.showMessageDialog(null, "回答错了！答案应该是" + question.getAnswer() + "！你这次第一次就答错了，下次继续努力吧！", "回答错误", JOptionPane.WARNING_MESSAGE);    //消息对话框
-                        break;
+                        if (isBreak) break;
                     }
                 }
+                if ((!isBreak)&&answer.equals("exit")) break;
                 time++;
             }
             return String.valueOf(time);
@@ -154,6 +164,42 @@ public class Quiz {
                                 + NAME_1 + content.getTips() + "\n" + NAME_2 + content.getAnswer() + "\n", true)
                 //最后会多出来一个换行\n
         );
+    }
+
+    private static double calculateSimilarity(String str1, String str2) {
+        if (str1 == null || str2 == null) {
+            throw new IllegalArgumentException("Strings must not be null");
+        }
+
+        // 转换字符串为小写，以忽略大小写差异
+        str1 = str1.toLowerCase();
+        str2 = str2.toLowerCase();
+
+        // 确保较短的字符串是str1，以提高效率
+        if (str1.length() > str2.length()) {
+            String temp = str1;
+            str1 = str2;
+            str2 = temp;
+        }
+
+        int matches = 0;
+        for (int i = 0; i < str1.length(); i++) {
+            if (str2.contains(String.valueOf(str1.charAt(i)))) {
+                matches++;
+                // 从str2中移除已匹配的字符，以避免重复计数
+                str2 = str2.replaceFirst(String.valueOf(str1.charAt(i)), "");
+            }
+        }
+
+        // 计算相似度：相同字符的数量除以str1的长度
+        double similarity = (double) matches / str1.length();
+        return similarity * 100; // 转换为百分比
+    }
+
+    //方法有问题！！
+    public static boolean isSimilar(String str1, String str2) {
+        double similarity = calculateSimilarity(str1, str2);
+        return similarity > 80;
     }
 
 }

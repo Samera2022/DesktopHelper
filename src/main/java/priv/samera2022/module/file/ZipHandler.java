@@ -78,24 +78,30 @@ public class ZipHandler {
         }
     }
 
+    /**
+     * @param source 源文件/文件夹地址
+     * @param output 输出地址
+     */
+    public static void compress(String source, String output) {
+        try (FileOutputStream fos = new FileOutputStream(output);
+             ZipOutputStream zos = new ZipOutputStream(fos)) {
+
+            // 调用递归方法压缩文件或文件夹
+            addToZipFile(source, source, zos);
+
+            System.out.println("文件已成功打包成 " + output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public static void main(String[] args) {
         // 要压缩的文件或文件夹
         String sourceFile = "D:/_S_A_M/Files/AppData/DesktopHelper/";
 
         // 压缩后的ZIP文件名
-        String zipFileName = "output.zip";
+        String zipFileName = "D:/_S_A_M/Desktop/"+"output.zip";
 
-        // 创建一个输出流将数据写入ZIP文件
-        try (FileOutputStream fos = new FileOutputStream(zipFileName);
-             ZipOutputStream zos = new ZipOutputStream(fos)) {
-
-            // 调用递归方法压缩文件或文件夹
-            addToZipFile(sourceFile, sourceFile, zos);
-
-            System.out.println("文件已成功打包成 " + zipFileName);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        compress(sourceFile,zipFileName);
     }
 
     private static void addToZipFile(String path, String sourceFile, ZipOutputStream zos) throws IOException {

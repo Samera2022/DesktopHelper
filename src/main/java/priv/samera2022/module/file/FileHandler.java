@@ -7,9 +7,10 @@ import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class FileHandler {
-    public static final String FOLDER_PATH = "D:/_S_A_M/Files/AppData/DesktopHelper/";
+    public static String FOLDER_PATH = "D:/_S_A_M/Files/AppData/DesktopHelper/";
     public static final String STORAGE_NAME = "Storage.txt";
     public static final String NOTIFICATION_NAME = "Notification.txt";
     public static final String QUIZ_PATH = "quizzes/";
@@ -20,6 +21,23 @@ public class FileHandler {
 
     //还是用init方法比较好，相较static块而言更方便初始化。
     static {
+
+        ArrayList<File> drives = new ArrayList<>();
+        drives.addAll(Arrays.asList(File.listRoots()));
+        for (int i = 0; i<drives.size(); i++){
+            File drive = drives.get(i);
+            if (drive.getPath().equals("D:\\")) {
+                FOLDER_PATH = "D:\\";
+                break;
+            } else if (i==drives.size()-1){
+//                FOLDER_PATH = drives.get(0).getPath();
+                FOLDER_PATH = JOptionPane.showInputDialog(null, "Specified A Disk! (D:\\)", "Disk D Not Found!", JOptionPane.INFORMATION_MESSAGE);        //输入对话框
+            }
+        }
+//        FOLDER_PATH = JOptionPane.showInputDialog(null, "Specified A Disk!", "Disk D Not Found!", JOptionPane.INFORMATION_MESSAGE);        //输入对话框
+        FOLDER_PATH = FOLDER_PATH + "_S_A_M/Files/AppData/DesktopHelper/";
+        System.out.println(FOLDER_PATH);
+
         try {
             File folder = new File(FOLDER_PATH);
             fixError(folder, true);
