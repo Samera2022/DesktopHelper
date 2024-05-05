@@ -154,7 +154,8 @@ public class UpdateInfo {
             "再统一对答案进行评价打分。\n" +
             " - label指令加入待办列表。\n" +
             "## [Warns]\n" +
-            " - \"quiz start <quizName> <isBreak> <useSimilarity>\" 指令中的<useSimilarity>默认改为false，因为相似算法仍然一定存在问题。";
+            " - \"quiz start <quizName> <isBreak> <useSimilarity>\" 指令中的<useSimilarity>默认改为false，因为相似算法仍然一定存在问题。\n" +
+            " - \"AminoAcidQuiz structure <isBreak>\" 指令依赖于.../quizzes/resources/amino_acids/下的图片来完成。";
     private static final String warns =
             "警示: " +
             "-后续指令注册时，应在Info中向COMMANDS加入该指令以进行模糊匹配！" +
