@@ -1,9 +1,8 @@
 package priv.samera2022.module;
 
-//import com.sun.jna.platform.FileUtils;
-
 import priv.samera2022.module.commands.registry.CommandHeads;
 import priv.samera2022.module.file.FileHandler;
+import priv.samera2022.module.font.FontStyle;
 import priv.samera2022.module.keylisteners.EnterKeyListener;
 import priv.samera2022.module.notification.Notification;
 import priv.samera2022.module.notification.NotificationFileHandler;
@@ -103,7 +102,6 @@ public class mainFrame {
             @Override
             public void focusGained(FocusEvent e) {
                 //假如鼠标点击到该控件内，即焦点位于控件内
-//                System.out.println("focusGained!");
                 //获取焦点的输出代码在这里
                 JTextArea jta = (JTextArea) e.getSource();
                 if (jta.getText().equals(inputAsst)) {
@@ -115,15 +113,8 @@ public class mainFrame {
             public void focusLost(FocusEvent e) {
                 try {
                     //假如鼠标点击到该控件外，即焦点位于控件外
-//                    System.out.println("focusLost!");
                     //获取焦点的输出代码在这里
                     JTextArea jta = (JTextArea) e.getSource();
-//                    if (CommandHeads.frame.isVisible()&&jta.getText().contains("frame b")){
-//                        dsdInput.remove(0,dsdInput.getLength());
-//                    }
-                    //可能会浪费性能，但我也不知道其他怎么解决了。因为一旦键入frame broaden指令，那么焦点就会丢失，
-                    // 进而keyReleased事件就会被打断，进而dsdInput的文字不会被消除。
-                    //该方法已被CommandHeads.clearInput()取代。
                     if (jta.getText().isEmpty()) {
                         dsdInput.insertString(0, inputAsst, FontStyle.plainStyle);//JTextArea并不支持字体颜色
                     }

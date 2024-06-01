@@ -1,10 +1,10 @@
 package priv.samera2022.module.notification;
 
-import priv.samera2022.module.FontStyle;
+import priv.samera2022.module.font.FontHandler;
+import priv.samera2022.module.font.FontStyle;
+import priv.samera2022.module.mainFrame;
 
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.Style;
+import javax.swing.text.*;
 
 public class NotificationContent {
     //警示！应当区分NotificationContent的内容与Notification的内容！
@@ -16,6 +16,7 @@ public class NotificationContent {
     public void append(DefaultStyledDocument dsd,int index) throws BadLocationException {
         String copy = content;
         int colorHead = copy.indexOf("[");
+        int in1 = 0;
         if (colorHead!=-1) {
             String preColorContent = copy.substring(0, colorHead);
             if (!preColorContent.isEmpty()) {
@@ -23,55 +24,59 @@ public class NotificationContent {
                 copy = copy.substring(colorHead);
             }
             while (!copy.isEmpty()) {
+//                Style style = FontStyle.blackStyle;
                 int colorEnd = copy.indexOf("]");
-                Style style = FontStyle.blackStyle;
-                String colorType = copy.substring(1, colorEnd);
+                String colorType = copy.substring(1, colorEnd);//得到的是不带中括号的字符串
+                Style style = FontHandler.resolveAttribute(copy.substring(0,colorEnd+1));
 //                System.out.println(colorType);
-                switch (colorType) {
-                    //也许可以用style.getName()然后遍历。
-                    case "blue":
-                    case "BLUE":
-                        style = FontStyle.blueStyle;
-                        break;
-                    case "dark_red":
-                    case "DARK_RED":
-                        style = FontStyle.darkRedStyle;
-                        break;
-                    case "yellow":
-                    case "YELLOW":
-                        style = FontStyle.yellowStyle;
-                        break;
-                    case "green":
-                    case "GREEN":
-                        style = FontStyle.greenStyle;
-                        break;
-                    case "grey":
-                    case "GREY":
-                        style = FontStyle.greyStyle;
-                        break;
-                    case "black":
-                    case "BLACK":
-                        style = FontStyle.blackStyle;
-                        break;
-                    default:
-                        for (int i = 0; i < FontStyle.colorStyles.length; i++) {
-                            Style element = FontStyle.colorStyles[i];
-                            if (colorType.equals(element.getName())) {
-                                style = element;
-                            } else if (i == FontStyle.colorStyles.length - 1) {
-                                style = FontStyle.blackStyle;
-                                System.out.println("Color Not Found.");
-                                break;
-                            }
-                        }
-                        break;
-                }
+//                switch (colorType) {
+//                    //也许可以用style.getName()然后遍历。
+//                    case "blue":
+//                    case "BLUE":
+//                        style = FontStyle.blueStyle;
+//                        break;
+//                    case "dark_red":
+//                    case "DARK_RED":
+//                        style = FontStyle.darkRedStyle;
+//                        break;
+//                    case "yellow":
+//                    case "YELLOW":
+//                        style = FontStyle.yellowStyle;
+//                        break;
+//                    case "green":
+//                    case "GREEN":
+//                        style = FontStyle.greenStyle;
+//                        break;
+//                    case "grey":
+//                    case "GREY":
+//                        style = FontStyle.greyStyle;
+//                        break;
+//                    case "black":
+//                    case "BLACK":
+//                        style = FontStyle.blackStyle;
+//                        break;
+//                    default:
+//                        for (int i = 0; i < FontStyle.colorStyles.length; i++) {
+//                            Style element = FontStyle.colorStyles[i];
+//                            if (colorType.equals(element.getName())) {
+//                                style = element;
+//                            } else if (i == FontStyle.colorStyles.length - 1) {
+//                                style = FontStyle.blackStyle;
+//                                mainFrame.logger.warn("Color Not Found.");
+//                                break;
+//                            }
+//                        }
+//                        break;
+//                }
                 copy = copy.substring(colorEnd);
                 int nextColorStart = copy.indexOf("[");
                 String content = copy.substring(1, nextColorStart != -1 ? nextColorStart : copy.length());
-                dsd.insertString(index+preColorContent.length(), content, style);
+                mainFrame.logger.debug("\n"+dsd.getText(0,dsd.getLength()));
+                dsd.insertString(index+preColorContent.length()+in1, content, style);
+                mainFrame.logger.debug("\n"+dsd.getText(0,dsd.getLength()));
                 if (nextColorStart != -1) copy = copy.substring(nextColorStart);
                 else copy = "";
+                in1 = in1 + content.length();
             }
         } else {
             dsd.insertString(index,content,FontStyle.blackStyle);

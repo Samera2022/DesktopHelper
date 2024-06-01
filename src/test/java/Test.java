@@ -8,6 +8,31 @@ import java.util.Arrays;
 
 public class Test {
     public static void main(String[] args) {
+        String input = "{\"value1\",\"value2\"}";
+        String[] output = convertStringToArray(input);
+
+        // 打印数组内容，以验证结果
+        for (String value : output) {
+            System.out.println(value);
+        }
+    }
+
+    public static String[] convertStringToArray(String input) {
+        // 去除大括号
+        String cleanedInput = input.replaceAll("[{}]", "");
+
+        // 分割字符串
+        String[] parts = cleanedInput.split(",");
+
+        // 去除双引号，并创建新的数组
+        String[] result = new String[parts.length];
+        for (int i = 0; i < parts.length; i++) {
+            result[i] = parts[i].trim().replaceAll("\"", "");
+        }
+
+        return result;
+    }
+    public static void main3(String[] args) {
         ArrayList<File> drives = new ArrayList<>();
         drives.addAll(Arrays.asList(File.listRoots()));
         for (int i = 0; i<drives.size(); i++){

@@ -8,18 +8,21 @@ import java.util.ArrayList;
 
 public class NotificationFileHandler {
     private static File notification = new File(FileHandler.FOLDER_PATH+FileHandler.NOTIFICATION_NAME);
-    public static ArrayList<Notification> notifications = new ArrayList<>();
+    public static ArrayList<Notification> notifications;
     static {
         notifications = read();
     }
 
+    //警示！在append的时候已经自动检测是否是第一行，若非第一行则执行换行操作。
     public static void append(String content){
         String inContent = FileHandler.read(FileHandler.FOLDER_PATH+FileHandler.NOTIFICATION_NAME);
-//        System.out.println("inContent: "+inContent);
         String enter = inContent.length()!=0?"\n":"";
-//        System.out.println("preOutput: "+inContent+enter+content);
-        FileHandler.write(FileHandler.FOLDER_PATH+FileHandler.NOTIFICATION_NAME,inContent+enter+content,true);
-    }//警示！在append的时候已经自动检测是否是第一行，若非第一行则执行换行操作。
+        FileHandler.write(FileHandler.FOLDER_PATH+FileHandler.NOTIFICATION_NAME,enter+content,true);
+    }
+
+    public static void insertString(String content, int index){
+        FileHandler.insertLine(FileHandler.FOLDER_PATH+FileHandler.NOTIFICATION_NAME,content,index);
+    }
 
     public static ArrayList<Notification> read(){
         ArrayList<Notification> notifications = new ArrayList<>();

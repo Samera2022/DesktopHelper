@@ -596,7 +596,7 @@ public class Download {
                 e.printStackTrace();
                 mainFrame.ExceptionHandler(e);
             }
-            System.out.println(url);
+            mainFrame.logger.debug(url);
             html = html.substring(html.indexOf("\"") + 1);
         }
         map.put("necessary", necessary);

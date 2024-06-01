@@ -1,10 +1,9 @@
-package priv.samera2022.module;
+package priv.samera2022.module.font;
 
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class FontStyle {
     public static final StyleContext sc = new StyleContext();

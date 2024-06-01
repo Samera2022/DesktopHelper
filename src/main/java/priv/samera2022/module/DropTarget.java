@@ -1,5 +1,7 @@
 package priv.samera2022.module;
 
+import priv.samera2022.module.font.FontStyle;
+
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.JTextComponent;
@@ -82,11 +84,8 @@ public class DropTarget extends DropTargetAdapter {
                                         case ".YML":
                                             if (t.contains(": ")) {
                                                 line(t, ": ", FontStyle.yamlBlueStyle, FontStyle.plainStyle);
-//                                            dsd.insertString(dsd.getLength(), t.substring(0, t.indexOf(": ")), FontStyle.blueStyle);
-//                                            dsd.insertString(dsd.getLength(), t.substring(t.indexOf(": ")) + "\r\n", FontStyle.plainStyle);
                                             } else {
                                                 dsd.insertString(dsd.getLength(), t + "\r\n", FontStyle.plainStyle);
-//                                            dsd.insertString(dsd.getLength(), "\r\n", FontStyle.plainStyle);
                                             }
                                             break;
                                         case ".log":
@@ -95,7 +94,6 @@ public class DropTarget extends DropTargetAdapter {
                                         case ".TXT":
                                             if (((t.contains("requires") || (t.contains("needs"))) && t.contains("Mod")) ||
                                                     Info.darkRedCode.stream().anyMatch(t::contains)) {
-//                                            dsd.insertString(dsd.getLength(), t+"\r\n", FontStyle.darkRedStyle);
                                                 style = FontStyle.darkRedStyle;
                                                 //                                        potentialRisk.add(t);
                                             } else if (t.contains("Can't keep up! Did the system time change, or is the server overloaded?")) {
@@ -123,10 +121,10 @@ public class DropTarget extends DropTargetAdapter {
                                         break;
   */
                                         default:
-                                            System.out.println("UNSPECIFIED FILE");
+                                            mainFrame.logger.warn("UNSPECIFIED FILE");
                                     }
 //                                    sb.append(t).append("\n");
-                                    System.out.println(t);
+                                    mainFrame.logger.info("content: "+t);
                                 }
                                 sc.close();
                                 isr.close();

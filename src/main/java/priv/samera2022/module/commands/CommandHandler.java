@@ -1,7 +1,7 @@
 package priv.samera2022.module.commands;
 
 import priv.samera2022.module.FuzzyMatcher;
-import priv.samera2022.module.FontStyle;
+import priv.samera2022.module.font.FontStyle;
 import priv.samera2022.module.annotation.Command;
 import priv.samera2022.module.commands.registry.CommandHeads;
 

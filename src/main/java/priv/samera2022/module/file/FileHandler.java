@@ -1,13 +1,21 @@
 package priv.samera2022.module.file;
 
+import priv.samera2022.module.Logger;
 import priv.samera2022.module.mainFrame;
 
 import javax.swing.*;
+import javax.swing.text.Style;
 import java.io.*;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class FileHandler {
     public static String FOLDER_PATH = "D:/_S_A_M/Files/AppData/DesktopHelper/";
@@ -36,7 +44,7 @@ public class FileHandler {
         }
 //        FOLDER_PATH = JOptionPane.showInputDialog(null, "Specified A Disk!", "Disk D Not Found!", JOptionPane.INFORMATION_MESSAGE);        //输入对话框
         FOLDER_PATH = FOLDER_PATH + "_S_A_M/Files/AppData/DesktopHelper/";
-        System.out.println(FOLDER_PATH);
+        mainFrame.logger.info("Current AppData Path: "+FOLDER_PATH);
 
         try {
             File folder = new File(FOLDER_PATH);
@@ -141,6 +149,55 @@ public class FileHandler {
         }
     }
 
+    public static void main(String[] args) {
+        insertLine("D:/_S_A_M/Desktop/test.txt","test",3);
+    }
+
+    public static void insertLine(String filePath, String textToInsert, int lineNumber) {
+        // 行号从1开始，所以需要做转换
+        lineNumber = lineNumber - 1;
+
+        Path path = Paths.get(filePath);
+        // 使用临时文件来避免原文件损坏
+        Path tempPath = Paths.get(filePath + ".tmp");
+
+        try (BufferedReader reader = Files.newBufferedReader(path);
+             BufferedWriter writer = Files.newBufferedWriter(tempPath)) {
+
+            String line;
+            int currentLine = 0;
+            boolean inserted = false;
+
+            while ((line = reader.readLine()) != null) {
+                if (currentLine == lineNumber && !inserted) {
+                    // 到达指定行号，插入新行
+                    writer.write(textToInsert);
+                    writer.newLine();
+                    inserted = true;
+                }
+                // 写入当前行
+                writer.write(line);
+                writer.newLine();
+                currentLine++;
+            }
+
+            if (!inserted) {
+                // 如果文件结束前未插入，则在文件末尾插入
+                writer.write(textToInsert);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            // 替换原始文件
+            Files.move(tempPath, path, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void deleteLine(String path, int lineIndex) {
         //lineIndex是人类识别的index，不是机器识别的index。
         try {
@@ -171,18 +228,6 @@ public class FileHandler {
             //ignore it.
         }
     }
-
-//    /**
-//     * @param url 指文件的下载地址
-//     */
-//    public static void downloadFile(String url, String path, String name) {
-//        File saveFile = new File(path, name);
-//        boolean download;
-//        if (saveFile.exists())
-//            download = JOptionPane.showConfirmDialog(null, "文件" + name + "已存在，是否覆盖？", "下载错误！", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION;
-//        else download = false;
-//        if (download) download(url, path, name);
-//    }
 
     /**
      * @param url  指文件的网络下载地址

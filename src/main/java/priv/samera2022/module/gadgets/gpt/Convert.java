@@ -3,6 +3,7 @@ package priv.samera2022.module.gadgets.gpt;
 //import out.json.jParser;
 
 
+import priv.samera2022.module.Logger;
 import priv.samera2022.module.gadgets.gpt.request.Message;
 import priv.samera2022.module.gadgets.gpt.response.Choices;
 import priv.samera2022.module.gadgets.gpt.response.Response;

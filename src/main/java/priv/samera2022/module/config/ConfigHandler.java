@@ -1,5 +1,6 @@
 package priv.samera2022.module.config;
 
+import priv.samera2022.module.Logger;
 import priv.samera2022.module.file.FileHandler;
 import priv.samera2022.module.mainFrame;
 

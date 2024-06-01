@@ -1,5 +1,7 @@
 package priv.samera2022.module.gadgets.mc.modpack.download;
 
+import priv.samera2022.module.mainFrame;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -27,7 +29,7 @@ public class JsonReader {
 //            System.out.println(json);
 ////            System.out.println("--------");
             String key = json.substring(0, json.indexOf("\":"));
-            System.out.println("key: " + key);
+            mainFrame.logger.debug("key: " + key);
             Object value;
             String valueC;
             valueC = json.substring(json.indexOf(": ") + ": ".length(), json.indexOf(",\n  \""));
@@ -43,7 +45,7 @@ public class JsonReader {
             else if (valueC.startsWith("[")) value = FJ_handleArray(valueC);//数组
             else value = valueC;
             //或可考虑注释语法
-            System.out.println("value: " + value);
+            mainFrame.logger.debug("value: " + value);
             map.put(key, value);
             json = json.substring(json.indexOf(",\n  \"") + ",\n  \"".length() - 1);
 ////            System.out.println("--------");

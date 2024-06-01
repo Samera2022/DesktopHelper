@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class AminoAcidQuiz {
-    public static void main(String[] args) {
+    public static void main2(String[] args) {
 //        quiz();
         for (;;){
             int random = randomInt(1-1,AminoAcid.amino_acids.size());//这是为了适配list中元素的序号
@@ -52,6 +52,7 @@ public class AminoAcidQuiz {
             if ((!isBreak)&&answer.equals("exit")) break;
             time++;
         }
+        frame.dispose();
         return time;
     }
     public static int plainQuiz(boolean isBreak){

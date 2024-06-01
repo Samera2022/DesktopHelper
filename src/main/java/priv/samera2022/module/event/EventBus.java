@@ -1,9 +1,8 @@
 package priv.samera2022.module.event;
 
-import priv.samera2022.module.FontStyle;
+import priv.samera2022.module.font.FontStyle;
 import priv.samera2022.module.commands.CommandHandler;
 import priv.samera2022.module.commands.registry.CommandHeads;
-import priv.samera2022.module.config.Config;
 import priv.samera2022.module.config.ConfigHandler;
 import priv.samera2022.module.event.api.Event;
 import priv.samera2022.module.event.events.EnterTypedKeyEvent;
@@ -24,7 +23,7 @@ public class EventBus {
         if (event instanceof EnterTypedKeyEvent){
             KeyEvent keyEvent = ((EnterTypedKeyEvent) event).getKeyEvent();
             String content = ((JTextComponent)keyEvent.getSource()).getText();
-            System.out.println(ConfigHandler.CONFIG.isCommandOutput());
+            mainFrame.logger.debug("Is Current Command Output: "+ConfigHandler.CONFIG.isCommandOutput());
             if (ConfigHandler.CONFIG.isCommandOutput()) append(content);
             ArrayList<String> commands = split(content);
             CommandHandler.handleCommands(commands);

@@ -1,5 +1,7 @@
 package priv.samera2022.module.file;
 
+import priv.samera2022.module.mainFrame;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -89,7 +91,7 @@ public class ZipHandler {
             // 调用递归方法压缩文件或文件夹
             addToZipFile(source, source, zos);
 
-            System.out.println("文件已成功打包成 " + output);
+            mainFrame.logger.info("文件已成功打包成 " + output);
         } catch (IOException e) {
             e.printStackTrace();
         }

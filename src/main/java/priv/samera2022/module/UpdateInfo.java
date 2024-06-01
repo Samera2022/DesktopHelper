@@ -1,7 +1,6 @@
 package priv.samera2022.module;
 
 public class UpdateInfo {
-    public static String[] UpdateInfo;
     private static final String version_0_0_1 =
             " - [Unreleased] - [0.0.1] - [Unknown]\n" +
             "## [Added]\n" +
@@ -156,6 +155,31 @@ public class UpdateInfo {
             "## [Warns]\n" +
             " - \"quiz start <quizName> <isBreak> <useSimilarity>\" 指令中的<useSimilarity>默认改为false，因为相似算法仍然一定存在问题。\n" +
             " - \"AminoAcidQuiz structure <isBreak>\" 指令依赖于.../quizzes/resources/amino_acids/下的图片来完成。";
+    public static final String version_0_0_5 =
+            " - [Released] - [0.0.5] - 2024-05-26 21:50\n" +
+            "## [Changed]\n" +
+            " - 修正了Logger的相关逻辑，使之可以正常使用。\n" +
+            "## [Added]\n" +
+            " - 添加了原先的notification指令，并设法使其兼容新版代码。\n" +
+            " - 添加并重写了原先的颜色系统，使之升级为字体系统，目前其支持的组件仍为notification系统。\n" +
+            "## [Usage]\n" +
+            "# notification指令\n" +
+            " - \"notification add <content> <index>\" 其中，index为可填项，content为必填项。" +
+            "content的格式要求为{<isFinished>,<startDate>,<endDate>}<content>或{<endDate>}<content> " +
+            "执行该指令后将会将指定提示插入目标行数（如果填写了index）或直接添加到末尾一行（如果未填写index）。\n" +
+            " - \"notification remove <index>\" 执行该指令后将会将指定目标行数的提示移除。\n" +
+            " - \"notification finished <index>\" 执行该指令后将会把目标行数的提示切换至完成状态。\n" +
+            " - \"notification unfinished <index>\" 执行该指令后将会把目标行数的提示切换至未完成状态。\n" +
+            "# 字体系统\n" +
+            " - 字体系统目前适用于notification系统。使用格式为[&<para>&<para>...]，比如：[&XA&XB]\n" +
+            " - 目前支持绝大多数Font的参数，已支持的参数对应表如下所示：\n" +
+            "[&FF(fontFamily)]调整字体  [&FS<fontSize>]调整字号  [&XA]粗体  [&XB]斜体  [&XC]下划线  [&XD]删除线  " +
+            "[&XE]上标  [&XF]下标  [&CF]字体颜色  [&CB]背景颜色  [&SA]段落上方留空大小  [&SB]段落下方留空大小  " +
+            "[&FL]首行缩进  [&LI]段落左缩进  [&RI]段落右缩进  [&LS]行间距\n" +
+            " - 特别地，对于[&CF]和[&CB]两个与颜色相关的参数，使用时应当传入色彩信息[&CF(<R>,<G>,<B>)]，比如：[&CF(0,0,0)]。";
+    //TODO 修正存在错误的AminoAcidQuiz get(3)
+    public static final String[] UpdateInfo = new String[]{version_0_0_1, version_0_0_2, version_0_0_3, version_0_0_3_1, version_pre_0_0_4,
+            version_0_0_4,version_0_0_4_1,version_0_0_4_2,version_0_0_4_3};
     private static final String warns =
             "警示: " +
             "-后续指令注册时，应在Info中向COMMANDS加入该指令以进行模糊匹配！" +
@@ -165,6 +189,6 @@ public class UpdateInfo {
             "-在各个Listener中，你其实有很多变量都是可以调用的。很多时候如果这个方法用这个变量不行，可以试试用另外一个方法调用另外一个变量来解决。" +
             "比如说在模糊判断输出Couldn't find that command! Guess...的时候，用message会导致时间和内容吞并，但是用dsdFileContent附加时间就可以解决。";
     public static void main(String[] args) {
-        System.out.println(version_0_0_4_3);
+        System.out.println(version_0_0_5);
     }
 }
