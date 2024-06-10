@@ -17,8 +17,12 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 public class mainFrame {
     public static Logger logger = new Logger();
@@ -72,9 +76,29 @@ public class mainFrame {
         jtpFileContent.setEditable(false);
         ScrollPane sp2 = new ScrollPane();
         sp2.add(jtpFileContent);
-        sp2.setBounds(x, 400, 300, 400);
+        sp2.setBounds(x, 400, 300, 400-40);
         new java.awt.dnd.DropTarget(jtpFileContent, DnDConstants.ACTION_COPY_OR_MOVE, dtsFileContent);
         totalPanel.add(sp2);
+
+        //
+        DefaultStyledDocument dsdCountdown = new DefaultStyledDocument(FontStyle.sc);
+        JTextPane jtpCountdown = new JTextPane(dsdCountdown);
+        LocalDateTime today = LocalDateTime.now();
+        logger.info("Current Date: "+today);
+        LocalDateTime specificDate = LocalDateTime.of(2025, 6, 7, 0, 0); // 2025年6月7日
+        long daysBetween = ChronoUnit.DAYS.between(today, specificDate);
+        if (daysBetween>0){
+            dsdCountdown.insertString(0,"               ->距离高考还有",FontStyle.blackStyle);
+            dsdCountdown.insertString(dsdCountdown.getLength()," "+daysBetween+" ",FontStyle.specialStyle);
+            dsdCountdown.insertString(dsdCountdown.getLength(),"天<-",FontStyle.blackStyle);
+        } else if (daysBetween >=-2)
+            dsdCountdown.insertString(0,"加油！",FontStyle.blackStyle);
+            else dsdCountdown.insertString(0,"高考结束了！",FontStyle.blackStyle);
+        jtpCountdown.setEditable(false);
+        ScrollPane spCd = new ScrollPane();
+        spCd.add(jtpCountdown);
+        spCd.setBounds(x, 500, 300, 40);
+        totalPanel.add(spCd);
 
         //<---Notification--->
         JTextPane jtpNotification = new JTextPane(dsdNotification);
@@ -93,7 +117,7 @@ public class mainFrame {
         jtpNotification.setEditable(false);
         ScrollPane sp3 = new ScrollPane();
         sp3.add(jtpNotification);
-        sp3.setBounds(x, 500, 300, 200);
+        sp3.setBounds(x, 500, 300, 175);
         totalPanel.add(sp3);
 
         //<---窗体尾--->

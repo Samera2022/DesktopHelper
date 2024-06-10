@@ -128,8 +128,9 @@ public class UpdateInfo {
             " - 或许应当考虑将关于mc的指令全部放在一级指令mc下面？\n" +
             "## [Warns]\n" +
             " - Logger的线程提示有问题，需要解决！";
-    //Todo 应当尝试直接填入Thread？
     //TODO CommandHeads.java downloadModpacks()缺失文件输出以后再写
+    //TODO config/ConfigHandler.java对于过时配置文件的逻辑并未加入，详见本String内被注释的行
+    //TODO Config的压缩和解压指令尚未制作完全！举例：执行压缩指令将会直接得到压缩完的DesktopHelper文件夹，执行解压指令将会压缩的DesktopHelper文件夹解压到本机的DesktopHelper路径进行覆盖/增添。
     private static final String version_0_0_4_3 =
             " - [Released] - [0.0.4.3] - 2024-05-05 15:00\n" +
             "## [Changed]\n" +
@@ -178,8 +179,19 @@ public class UpdateInfo {
             "[&FL]首行缩进  [&LI]段落左缩进  [&RI]段落右缩进  [&LS]行间距\n" +
             " - 特别地，对于[&CF]和[&CB]两个与颜色相关的参数，使用时应当传入色彩信息[&CF(<R>,<G>,<B>)]，比如：[&CF(0,0,0)]。";
     //TODO 修正存在错误的AminoAcidQuiz get(3)
-    public static final String[] UpdateInfo = new String[]{version_0_0_1, version_0_0_2, version_0_0_3, version_0_0_3_1, version_pre_0_0_4,
-            version_0_0_4,version_0_0_4_1,version_0_0_4_2,version_0_0_4_3};
+    public static String version_0_0_5_1 =
+            " - [Released] - [0.0.5.1] - 2024-06-10 21:03\n" +
+            "## [Added]\n" +
+            " - 添加了version指令。\n" +
+            " - 添加高考倒计时功能。\n" +
+            "## [Usage]\n" +
+            "# version指令\n" +
+            " - \"version list\" 列出该程序的所有历史版号。\n" +
+            " - \"version show\" 从历史版号中按序号读取更新日志信息。\n" +
+            "## [Warns]\n" +
+            " - 由于倒计时的加入，Panel的大小和位置大多都发生了改变。如要查询历史版本，则需回到v0.0.5版本。\n" +
+            " - 剩余未开发的功能与bug将会被封存，直至下一次重新激活。\n";
+    //TODO 剩余功能计划已写在UpdateInfo.java的TODO注释行（部分）和纸上（部分）保存！
     private static final String warns =
             "警示: " +
             "-后续指令注册时，应在Info中向COMMANDS加入该指令以进行模糊匹配！" +
@@ -188,7 +200,9 @@ public class UpdateInfo {
             "提示: " +
             "-在各个Listener中，你其实有很多变量都是可以调用的。很多时候如果这个方法用这个变量不行，可以试试用另外一个方法调用另外一个变量来解决。" +
             "比如说在模糊判断输出Couldn't find that command! Guess...的时候，用message会导致时间和内容吞并，但是用dsdFileContent附加时间就可以解决。";
+    public static final String[] UpdateInfo = new String[]{version_0_0_1, version_0_0_2, version_0_0_3, version_0_0_3_1, version_pre_0_0_4,
+            version_0_0_4,version_0_0_4_1,version_0_0_4_2,version_0_0_4_3,version_0_0_5,version_0_0_5_1};
     public static void main(String[] args) {
-        System.out.println(version_0_0_5);
+        System.out.println(version_0_0_5_1);
     }
 }

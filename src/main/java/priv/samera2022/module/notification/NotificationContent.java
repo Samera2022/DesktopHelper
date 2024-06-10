@@ -71,9 +71,9 @@ public class NotificationContent {
                 copy = copy.substring(colorEnd);
                 int nextColorStart = copy.indexOf("[");
                 String content = copy.substring(1, nextColorStart != -1 ? nextColorStart : copy.length());
-                mainFrame.logger.debug("\n"+dsd.getText(0,dsd.getLength()));
+//                mainFrame.logger.debug("\n"+dsd.getText(0,dsd.getLength()));
                 dsd.insertString(index+preColorContent.length()+in1, content, style);
-                mainFrame.logger.debug("\n"+dsd.getText(0,dsd.getLength()));
+//                mainFrame.logger.debug("\n"+dsd.getText(0,dsd.getLength()));
                 if (nextColorStart != -1) copy = copy.substring(nextColorStart);
                 else copy = "";
                 in1 = in1 + content.length();

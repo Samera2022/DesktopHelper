@@ -44,6 +44,8 @@ import static priv.samera2022.module.mainFrame.dsdNotification;
 public class CommandHeads {
     public static JFrame frame = new JFrame();
 
+    //统一二级菜单：用list不用all
+
     static {
         int locX = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth() - 320;
         int locY = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 100;
@@ -71,11 +73,8 @@ public class CommandHeads {
     //commands的0是指令头，依次往下分
     @Command
     public static void print(ArrayList<String> commands) {
-//        boolean delete = mixture.getKey();
-//        ArrayList<String> commands = mixture.getValue();
         String content = commands.get(1);
         formatter(true, new Mixture<>(content, FontStyle.blackStyle));
-//        System.out.println(commands.get(0));
     }
 
     //失败！存在问题！
@@ -147,9 +146,11 @@ public class CommandHeads {
                 frame.setVisible(true);
                 break;
             case "close":
+                clearInput();
                 frame.setVisible(false);
                 break;
             case "dispose":
+                clearInput();
                 frame.dispose();
                 formatter(true, new Mixture<>("窗体已清除", FontStyle.blackStyle));
                 break;
@@ -174,9 +175,11 @@ public class CommandHeads {
         int time = 0;
         switch (subCommand) {
             case "plain":
+                clearInput();
                 time = AminoAcidQuiz.plainQuiz(isBreak);
                 break;
             case "structure":
+                clearInput();
                 time = AminoAcidQuiz.structureQuiz(isBreak);
                 break;
             default:
@@ -200,12 +203,14 @@ public class CommandHeads {
         //常见异常：在switch case里面写了指令但是却在fuzzyMatch的数组里忘记加上这个指令
         switch (subCommand) {
             case "create":
+                clearInput();
                 Quiz.input(commands.get(2));
                 if (new File(FileHandler.FOLDER_PATH + FileHandler.QUIZ_PATH + commands.get(2) + ".txt").exists())
                     formatter(true, new Mixture<>("创建成功!", FontStyle.greenStyle));
                 else formatter(true, new Mixture<>("创建失败!", FontStyle.darkRedStyle));
                 break;
             case "start":
+                clearInput();
                 String rawSubCommand2 = commands.get(3);
                 String subCommand2 = FuzzyMatcher.fuzzyMatch(rawSubCommand2, Arrays.asList("stop", "continue"));
                 String rawSubCommand3 = commands.get(4);
@@ -561,12 +566,42 @@ public class CommandHeads {
                     }
                     break;
                 case "browser":
-//                    priv.samera2022.module.gadgets.mc.modpack.download.browser.Download.downloadModpacks(commands.get(2));
+                    priv.samera2022.module.gadgets.mc.modpack.download.browser.Download.downloadModpacks(commands.get(2));
                     break;
                 default:
                     break;
             }
         } else priv.samera2022.module.gadgets.mc.modpack.download.browser.Download.downloadModpacks(commands.get(2));
+    }
+
+    @Command
+    public static void version(ArrayList<String> commands){
+        String rawSubCommand = commands.get(1);
+        String subCommand = FuzzyMatcher.fuzzyMatch(rawSubCommand, Arrays.asList("list","latest","show"));
+        switch (subCommand){
+            case "latest":
+                String[] arr = UpdateInfo.UpdateInfo;
+                formatter(true,new Mixture<>(arr[arr.length-1],FontStyle.plainStyle));
+                break;
+            case "list":
+                formatter(true, new Mixture<>("DH Versions:\n" +
+                        " - [Unreleased] - [0.0.1] - [Unknown]\n" +
+                        " - [Unreleased] - [0.0.2] - 2023-08-07 15:58\n" +
+                        " - [Released] - [0.0.3] - 2023-08-12 12:12\n" +
+                        " - [Released] - [0.0.3.1] - 2023-08-26 09:58\n" +
+                        " - [Released] - [pre0.0.4] - 2023-09-03 16:48\n" +
+                        " - [Released] - [0.0.4] - 2024-01-27 19:20\n" +
+                        " - [Released] - [0.0.4.1] - 2024-02-08 18:44\n" +
+                        " - [Released] - [0.0.4.2] - 2024-02-20 13:22\n" +
+                        " - [Released] - [0.0.4.3] - 2024-05-05 15:00\n" +
+                        " - [Released] - [0.0.5] - 2024-05-26 21:50" +
+                        "",FontStyle.plainStyle));
+                break;
+            case "show":
+                String ver = commands.get(2);
+                formatter(true,new Mixture<>(UpdateInfo.UpdateInfo[Integer.parseInt(ver)-1],FontStyle.plainStyle));
+                break;
+        }
     }
 
     @Command

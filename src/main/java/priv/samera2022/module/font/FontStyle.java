@@ -10,6 +10,8 @@ public class FontStyle {
     public static final Style plainStyle = sc.addStyle("PLAIN",null);
     public static final Style yamlBlueStyle = sc.addStyle("BLUE", null);
 
+    public static final Style specialStyle = sc.addStyle("SPECIAL", null);
+
     public static final Style blackStyle = sc.addStyle("BLACK",null);
     public static final Style blueStyle = sc.addStyle("BLUE",null);
     public static final Style yellowStyle = sc.addStyle("YELLOW",null);
@@ -30,7 +32,9 @@ public class FontStyle {
 
         register(plainStyle,Color.BLACK,false,14);
         register(yamlBlueStyle,Color.BLUE,true, 14);
-        
+
+        register(specialStyle,Color.RED, true, 18);
+
         register(blueStyle,Color.BLUE,false,14);
         register(blackStyle,Color.BLACK,false,14);
         register(darkRedStyle,new Color(139,0,0),true,14);
