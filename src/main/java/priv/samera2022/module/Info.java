@@ -15,6 +15,7 @@ public class Info {
 
     public static final ArrayList<String> darkRedCode = new ArrayList<>();
 
+    public static final Color DARK_MODE = new Color(150, 150, 150, 255);
     static {
         NOTIFICATION_COMMANDS.addAll(Arrays.asList("add","remove","unfinished","finished"));
 

@@ -25,6 +25,7 @@ public class EventBus {
             String content = ((JTextComponent)keyEvent.getSource()).getText();
             mainFrame.logger.debug("Is Current Command Output: "+ConfigHandler.CONFIG.isCommandOutput());
             if (ConfigHandler.CONFIG.isCommandOutput()) append(content);
+            mainFrame.logger.info("dsdInput传入内容："+content);
             ArrayList<String> commands = split(content);
             CommandHandler.handleCommands(commands);
         }
@@ -35,7 +36,7 @@ public class EventBus {
         try {
             CommandHeads._timePrefix(mainFrame.dsdFileContent);
             mainFrame.dsdFileContent.insertString(mainFrame.dsdFileContent.getLength(),"\n[Command] ", FontStyle.blueStyle);
-            mainFrame.dsdFileContent.insertString(mainFrame.dsdFileContent.getLength(),content, FontStyle.blackStyle);
+            mainFrame.dsdFileContent.insertString(mainFrame.dsdFileContent.getLength(),content, FontStyle.plainStyle);
         } catch (BadLocationException e) {
             e.printStackTrace();
             mainFrame.ExceptionHandler(e);

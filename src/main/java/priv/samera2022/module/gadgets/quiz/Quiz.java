@@ -1,5 +1,6 @@
 package priv.samera2022.module.gadgets.quiz;
 
+import priv.samera2022.module.Mixture;
 import priv.samera2022.module.file.FileHandler;
 import priv.samera2022.module.mainFrame;
 
@@ -29,19 +30,37 @@ public class Quiz {
 //examine模块
 
     public static String examine(String quizName, boolean isBreak, boolean useSimilarity) {
-        File file = new File(FileHandler.FOLDER_PATH + FileHandler.QUIZ_PATH + quizName + ".txt");
+        File file = new File(FileHandler.FOLDER_PATH + FileHandler.QUIZ_PATH + quizName + ".qiz");
         if (!file.exists()) {
             return "该测试不存在！";
         } else {
             ArrayList<Question> questions = handleDuplicates(file);
+            ArrayList<Mixture<Question,Integer>> mixtures = new ArrayList<>(); //mixtures和questions的长度不等价！！！mixtures的元素会在后面的代码中被逐渐删除，因此长度会在后面被更新，而questions这个ArrayList则是恒定的，不会在后面被改变。
+            questions.forEach(e->mixtures.add(new Mixture<>(e,0)));
             int time = 1;
             for (; ; ) {
-                int random = randomInt(1, questions.size());
-                Question question = questions.get(random - 1);
+                if (mixtures.size()==0){
+                    String content;
+                    if (time!=0) content = "所有问题已被移除！";
+                    else content = "该测试为空！";
+                    mainFrame.logger.info(content);
+                    JOptionPane.showConfirmDialog(null,content,"提示",JOptionPane.YES_NO_OPTION);
+                    return content;
+                }
+                int random = randomInt(1, mixtures.size());
+                Mixture<Question,Integer> mixture = mixtures.get(random - 1);
+                if (mixture.getValue()>=5){
+                    mixtures.remove(random - 1);
+                    mainFrame.logger.info("该问题分值已达到设计最大值5！已从问题列表中移除该问题。");
+                    continue;
+                }
+                mainFrame.logger.info("该问题目前分值为"+mixture.getValue());
+                Question question = mixture.getKey();
                 String answer = JOptionPane.showInputDialog(null, question.getTips(), "第" + time + "次", JOptionPane.QUESTION_MESSAGE);        //输入对话框
                 if (answer == null) {
                     if (time != 1) {
                         JOptionPane.showMessageDialog(null, "答案是" + question.getAnswer() + "！你这次"+(isBreak?"答对了":"作答了") + time + "次。", "回答结束", JOptionPane.WARNING_MESSAGE);    //消息对话框
+                        mixtures.set(random-1, new Mixture<>(question,mixture.getValue() - 1));
                     }
                     if (isBreak) break;
                 } else {
@@ -59,14 +78,24 @@ public class Quiz {
                             JOptionPane.showMessageDialog(null, "回答错了！答案应该是" + question.getAnswer() + "！你这次答对了" + time + "次，下次继续努力吧！", "回答错误", JOptionPane.WARNING_MESSAGE);    //消息对话框
                         } else
                             JOptionPane.showMessageDialog(null, "回答错了！答案应该是" + question.getAnswer() + "！你这次第一次就答错了，下次继续努力吧！", "回答错误", JOptionPane.WARNING_MESSAGE);    //消息对话框
+                        mixtures.set(random-1, new Mixture<>(question,mixture.getValue() - 1));
                         if (isBreak) break;
-                    }
+                    } else
+                        mixtures.set(random-1, new Mixture<>(question,mixture.getValue() + 1));
                 }
                 if ((!isBreak)&&answer.equals("exit")) break;
                 time++;
             }
             return String.valueOf(time);
         }
+    }
+
+    private static boolean random(float probability) {
+        if (probability < 0 || probability > 1) {
+            throw new IllegalArgumentException("Probability must be between 0 and 1");
+        }
+        Random random = new Random();
+        return random.nextDouble() < probability;
     }
 
     //考虑是否存在重复的问题？
@@ -121,7 +150,7 @@ public class Quiz {
 //input代码模块
 
     public static void input(String quizName) {
-        File file = new File(FileHandler.FOLDER_PATH + FileHandler.QUIZ_PATH + quizName + ".txt");
+        File file = new File(FileHandler.FOLDER_PATH + FileHandler.QUIZ_PATH + quizName + ".qiz");
         preAction(file);
         write(getQuestions(), file);
     }
@@ -147,10 +176,10 @@ public class Quiz {
         int i = 1;
         for (; ; ) {
             String tips = JOptionPane.showInputDialog(null, "请输入提示", "第" + i + "次输入", JOptionPane.QUESTION_MESSAGE);
-            if (tips == null) break;
+//            if (tips == null) break;
             if (tips.equals("exit") || tips.length() == 0) break;
             String answer = JOptionPane.showInputDialog(null, "请输入答案", "第" + i + "次输入", JOptionPane.QUESTION_MESSAGE);
-            if (answer == null) break;
+//            if (answer == null) break;
             if (answer.equals("exit") || answer.length() == 0) break;
             questions.add(new Question(tips, answer));
             i++;

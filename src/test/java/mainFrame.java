@@ -83,10 +83,10 @@
 //                    dsdNotification.insertString(dsdNotification.getLength(), "[×]", FontStyle.darkRedStyle);
 //                }
 //                notification.getContent().append(dsdNotification, dsdNotification.getLength());
-//                dsdNotification.insertString(dsdNotification.getLength(), "\n", FontStyle.blackStyle);
+//                dsdNotification.insertString(dsdNotification.getLength(), "\n", FontStyle.plainStyle);
 ////                System.out.println("Notification.toString(): "+notification.toString());
 ////                System.out.println("NotificationContent.contentToString(): "+notification.getContent().contentToString());
-////                if (i!=NotificationFileHandler.notifications.size()-1) dsdNotification.insertString(dsdNotification.getLength(),"\n",FontStyle.blackStyle);
+////                if (i!=NotificationFileHandler.notifications.size()-1) dsdNotification.insertString(dsdNotification.getLength(),"\n",FontStyle.plainStyle);
 //            }
 //        }
 //        jtpNotification.setEditable(false);
@@ -129,30 +129,30 @@
 //                                if (!targetCommand.contains(" ")) {
 //                                    switch (targetCommand) {
 //                                        case "print":
-//                                            messages.add(new Mixture<>("Usage: print <content>\n", FontStyle.blackStyle));
-//                                            messages.add(new Mixture<>("Description: Just to print some words.", FontStyle.blackStyle));
+//                                            messages.add(new Mixture<>("Usage: print <content>\n", FontStyle.plainStyle));
+//                                            messages.add(new Mixture<>("Description: Just to print some words.", FontStyle.plainStyle));
 //                                            break;
 //                                        case "clear":
-//                                            messages.add(new Mixture<>("Usage: clear\n", FontStyle.blackStyle));
-//                                            messages.add(new Mixture<>("Description: Clear all the history.", FontStyle.blackStyle));
+//                                            messages.add(new Mixture<>("Usage: clear\n", FontStyle.plainStyle));
+//                                            messages.add(new Mixture<>("Description: Clear all the history.", FontStyle.plainStyle));
 //                                            break;
 ////                                        case "del":
 ////                                        case "delete":
-////                                            messages.add(new Mixture<>("Usage: del||delete",FontStyle.blackStyle));
-////                                            messages.add(new Mixture<>("Description: Delete a file or a folder.",FontStyle.blackStyle));
+////                                            messages.add(new Mixture<>("Usage: del||delete",FontStyle.plainStyle));
+////                                            messages.add(new Mixture<>("Description: Delete a file or a folder.",FontStyle.plainStyle));
 ////                                            break;
 //                                        case "notification":
-//                                            messages.add(new Mixture<>("\nUsage: notification <subCommand> \"{(isFinished,startDate,)endDate}<message>\" <index>\n", FontStyle.blackStyle));
-//                                            messages.add(new Mixture<>("Description: For more helps of notification, please enter: notification help", FontStyle.blackStyle));
+//                                            messages.add(new Mixture<>("\nUsage: notification <subCommand> \"{(isFinished,startDate,)endDate}<message>\" <index>\n", FontStyle.plainStyle));
+//                                            messages.add(new Mixture<>("Description: For more helps of notification, please enter: notification help", FontStyle.plainStyle));
 //                                            break;
 //                                        case "all":
-//                                            messages.add(new Mixture<>("\nCommand List is as followed: \n",FontStyle.blackStyle));
-//                                            messages.add(new Mixture<>("1. usage \n",FontStyle.blackStyle));
-//                                            messages.add(new Mixture<>("2. exit \n",FontStyle.blackStyle));
-//                                            messages.add(new Mixture<>("3. print \n",FontStyle.blackStyle));
-//                                            messages.add(new Mixture<>("4. clear \n",FontStyle.blackStyle));
-//                                            messages.add(new Mixture<>("5. notification \n",FontStyle.blackStyle));
-//                                            messages.add(new Mixture<>("6. ChemistryQuiz ",FontStyle.blackStyle));
+//                                            messages.add(new Mixture<>("\nCommand List is as followed: \n",FontStyle.plainStyle));
+//                                            messages.add(new Mixture<>("1. usage \n",FontStyle.plainStyle));
+//                                            messages.add(new Mixture<>("2. exit \n",FontStyle.plainStyle));
+//                                            messages.add(new Mixture<>("3. print \n",FontStyle.plainStyle));
+//                                            messages.add(new Mixture<>("4. clear \n",FontStyle.plainStyle));
+//                                            messages.add(new Mixture<>("5. notification \n",FontStyle.plainStyle));
+//                                            messages.add(new Mixture<>("6. ChemistryQuiz ",FontStyle.plainStyle));
 //                                            break;
 //                                    }
 //                                } else messages.add(new Mixture<>("Illegal Command!", FontStyle.darkRedStyle));
@@ -255,27 +255,27 @@
 ////                                                            System.out.println("totalLength: " + length);
 //                                                            int lengthOfN;//字面意思，为换行所预留的长度
 //                                                            if (index != 1) {
-//                                                                dsdNotification.insertString(length, "\n", FontStyle.blackStyle);
+//                                                                dsdNotification.insertString(length, "\n", FontStyle.plainStyle);
 //                                                                lengthOfN = 1;
 //                                                            } else lengthOfN = 0;
 //                                                            if (n.isFinished())
 //                                                                dsdNotification.insertString(length + lengthOfN, "[√]", FontStyle.greenStyle);
 //                                                            else
 //                                                                dsdNotification.insertString(length + lengthOfN, "[×]", FontStyle.darkRedStyle);
-////                                                            dsdNotification.insertString(length + lengthOfN + 3, "", FontStyle.blackStyle);
+////                                                            dsdNotification.insertString(length + lengthOfN + 3, "", FontStyle.plainStyle);
 //                                                            n.getContent().append(dsdNotification, length + lengthOfN + 3);
 //                                                            if (index == 1)
-//                                                                dsdNotification.insertString(n.getContent().contentToString().length() + 3, "\n", FontStyle.blackStyle);
-////                                                        dsdNotification.insertString(length+n.getContent().contentToString().length()+1+3,"\n",FontStyle.blackStyle);
+//                                                                dsdNotification.insertString(n.getContent().contentToString().length() + 3, "\n", FontStyle.plainStyle);
+////                                                        dsdNotification.insertString(length+n.getContent().contentToString().length()+1+3,"\n",FontStyle.plainStyle);
 //                                                        }
 //                                                    } else {
 //                                                        if (n.isFinished())
 //                                                            dsdNotification.insertString(dsdNotification.getLength(), "[√]", FontStyle.greenStyle);
 //                                                        else
 //                                                            dsdNotification.insertString(dsdNotification.getLength(), "[×]", FontStyle.darkRedStyle);
-////                                                        dsdNotification.insertString(dsdNotification.getLength(), "", FontStyle.blackStyle);
+////                                                        dsdNotification.insertString(dsdNotification.getLength(), "", FontStyle.plainStyle);
 //                                                        n.getContent().append(dsdNotification, dsdNotification.getLength());
-//                                                        dsdNotification.insertString(dsdNotification.getLength(), "\n", FontStyle.blackStyle);
+//                                                        dsdNotification.insertString(dsdNotification.getLength(), "\n", FontStyle.plainStyle);
 //                                                        //startDate和endDate暂未加入使用
 //                                                    }
 //                                                    messages.add(new Mixture<>("Notification added Successfully!", FontStyle.greenStyle));

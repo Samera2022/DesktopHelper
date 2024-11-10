@@ -12,6 +12,7 @@ import priv.samera2022.module.gadgets.mc.modpack.ModpackHandler;
 import priv.samera2022.module.gadgets.mc.modpack.download.Concept;
 import priv.samera2022.module.gadgets.mc.modpack.download.key.Download;
 import priv.samera2022.module.gadgets.quiz.Quiz;
+import priv.samera2022.module.keylisteners.EnterKeyListener;
 import priv.samera2022.module.notification.Notification;
 import priv.samera2022.module.notification.NotificationContent;
 import priv.samera2022.module.notification.NotificationFileHandler;
@@ -21,10 +22,10 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Style;
 
-import java.awt.Toolkit;
-import java.awt.ScrollPane;
-import java.awt.Desktop;
+import java.awt.*;
 import java.awt.dnd.DnDConstants;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -43,7 +44,6 @@ import static priv.samera2022.module.mainFrame.dsdNotification;
 
 public class CommandHeads {
     public static JFrame frame = new JFrame();
-
     //统一二级菜单：用list不用all
 
     static {
@@ -65,6 +65,9 @@ public class CommandHeads {
         sp2.setBounds(310, 100, locX - 320, locY - 100);
         new java.awt.dnd.DropTarget(jtpFileContent, DnDConstants.ACTION_COPY_OR_MOVE, dtsFileContent);
         totalPanel.add(sp2);
+        if (ConfigHandler.CONFIG.isDarkMode()){
+            jtpFileContent.setBackground(Info.DARK_MODE);
+        }
         frame.add(totalPanel);
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.setVisible(false);
@@ -74,7 +77,12 @@ public class CommandHeads {
     @Command
     public static void print(ArrayList<String> commands) {
         String content = commands.get(1);
-        formatter(true, new Mixture<>(content, FontStyle.blackStyle));
+        if (commands.size()>2){
+            for (int i = 2; i<commands.size(); i++){
+                content = content + " " + commands.get(i);
+            }
+        }
+        formatter(true, new Mixture<>(content, FontStyle.plainStyle));
     }
 
     //失败！存在问题！
@@ -111,7 +119,7 @@ public class CommandHeads {
         Path path = Paths.get(filePath);
         if (Files.exists(path.resolve(new File(filePath).getName()))) {
             Desktop.getDesktop().moveToTrash(new File(filePath));
-            formatter(true, new Mixture<>("Operation inspecting... Please Wait.", FontStyle.blackStyle));
+            formatter(true, new Mixture<>("Operation inspecting... Please Wait.", FontStyle.plainStyle));
             Thread thread = new Thread() {
                 @Override
                 public void run() {
@@ -138,7 +146,7 @@ public class CommandHeads {
 //        boolean delete = mixture.getKey();
 //        ArrayList<String> commands = mixture.getValue();
         String rawSubCommand = commands.get(1);
-        String subCommand = FuzzyMatcher.fuzzyMatch(rawSubCommand, Arrays.asList("broaden", "close", "dispose"));
+        String subCommand = FuzzyMatcher.fuzzyMatch(rawSubCommand, Arrays.asList("broaden", "close", "dispose","debug"));
         //常见异常：在switch case里面写了指令但是却在fuzzyMatch的数组里忘记加上这个指令
         switch (subCommand) {
             case "broaden":
@@ -152,12 +160,90 @@ public class CommandHeads {
             case "dispose":
                 clearInput();
                 frame.dispose();
-                formatter(true, new Mixture<>("窗体已清除", FontStyle.blackStyle));
+                formatter(true, new Mixture<>("窗体已清除", FontStyle.plainStyle));
+                break;
+            case "debug":
                 break;
             default:
-                formatter(true, new Mixture<>("尽管这条消息肯定不会出现在控制台上，下面的break也没有实际用途，但是还是写上了。", FontStyle.blackStyle));
+                formatter(true, new Mixture<>("尽管这条消息肯定不会出现在控制台上，下面的break也没有实际用途，但是还是写上了。", FontStyle.plainStyle));
                 break;
         }
+    }
+
+    public static void main(String[] args) {
+        debugFrame();
+    }
+
+    private static Mixture<Integer,Integer> frameCalc(int width, int height){
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = toolkit.getScreenSize();
+        int sW = screenSize.width;
+        int sH = screenSize.height;
+        return new Mixture<>((sW-width)/2, (sH-height)/2);
+    }
+
+    private static void debugFrame(){
+        JFrame frame = new JFrame("Debug GUI");
+        Mixture<Integer,Integer> mix = frameCalc(800,400);
+        frame.setBounds(mix.getKey(),mix.getValue(),800,400);
+        int x = frame.getX();
+        int y = frame.getY();
+        int width = frame.getWidth();
+        int height = frame.getHeight();
+
+        int middleX = (int) (x+0.5*width);
+        int middleY = (int) (y+0.5*height);
+        JPanel totalPanel = new JPanel();
+
+        //<---INPUT--->
+        JTextArea jtaInput = new JTextArea();
+        jtaInput.setEditable(true);
+        jtaInput.setLineWrap(true);
+        jtaInput.setWrapStyleWord(true);
+        ScrollPane sp1 = new ScrollPane();
+        sp1.add(jtaInput);
+        sp1.setBounds((int) (x+0.5*width), (int) (y+0.8*height), (int) (0.5*width), (int) (0.2*height));
+        totalPanel.add(sp1);
+
+        //<---DEBUG--->
+        JTextArea jtaDebug = new JTextArea();
+        jtaDebug.setEditable(false);
+        ScrollPane sp2 = new ScrollPane();
+        sp2.add(jtaDebug);
+        sp2.setBounds((int) (x+0.5*width), y, (int) (0.5*width), (int) (0.8*height));
+        totalPanel.add(sp2);
+
+
+        //<---窗体尾--->
+        jtaInput.addKeyListener(new EnterKeyListener());
+        jtaInput.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                //假如鼠标点击到该控件内，即焦点位于控件内
+                //获取焦点的输出代码在这里
+                JTextArea jta = (JTextArea) e.getSource();
+                if (jta.getText().equals(inputAsst)||jta.getText().equals(inputAsst+"\n")) {
+                    jta.setText(null);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                try {
+                    //假如鼠标点击到该控件外，即焦点位于控件外
+                    //获取焦点的输出代码在这里
+                    JTextArea jta = (JTextArea) e.getSource();
+                    if (jta.getText().isEmpty()) {
+                        dsdInput.insertString(0, inputAsst, FontStyle.plainStyle);//JTextArea并不支持字体颜色
+                    }
+                } catch (BadLocationException badLocationException) {
+                    //ignore it.
+                }
+            }
+        });
+        frame.add(totalPanel);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setVisible(true);
     }
 
     @SuppressWarnings("unused")
@@ -205,17 +291,24 @@ public class CommandHeads {
             case "create":
                 clearInput();
                 Quiz.input(commands.get(2));
-                if (new File(FileHandler.FOLDER_PATH + FileHandler.QUIZ_PATH + commands.get(2) + ".txt").exists())
+                if (new File(FileHandler.FOLDER_PATH + FileHandler.QUIZ_PATH + commands.get(2) + ".qiz").exists())
                     formatter(true, new Mixture<>("创建成功!", FontStyle.greenStyle));
                 else formatter(true, new Mixture<>("创建失败!", FontStyle.darkRedStyle));
                 break;
             case "start":
                 clearInput();
-                String rawSubCommand2 = commands.get(3);
-                String subCommand2 = FuzzyMatcher.fuzzyMatch(rawSubCommand2, Arrays.asList("stop", "continue"));
-                String rawSubCommand3 = commands.get(4);
-                String subCommand3 = FuzzyMatcher.fuzzyMatch(rawSubCommand3, Arrays.asList("true", "false"));
-                String result = Quiz.examine(commands.get(2),subCommand2.equals("stop"),subCommand3.equals("true"));
+                String subCommand2;
+                String subCommand3;
+                if (commands.size()<4){
+                    subCommand2 = "continue";
+                    subCommand3 = "false";
+                } else {
+                    String rawSubCommand2 = commands.get(3);
+                    subCommand2 = FuzzyMatcher.fuzzyMatch(rawSubCommand2, Arrays.asList("stop", "continue"));
+                    String rawSubCommand3 = commands.get(4);
+                    subCommand3 = FuzzyMatcher.fuzzyMatch(rawSubCommand3, Arrays.asList("true", "false"));
+                }
+                String result = Quiz.examine(commands.get(2), subCommand2.equals("stop"), subCommand3.equals("true"));
                 switch (subCommand2) {
                     case "stop":
                         boolean digit = false;
@@ -230,14 +323,16 @@ public class CommandHeads {
                         //该种情况是由于反馈了“测试不存在”所导致的。应当考虑整合到start就进行判断
                         break;
                     case "continue":
-                        formatter(true, new Mixture<>("答题结束！这次一共作答" + result + "次，下次继续努力吧！", FontStyle.greenStyle));
+                        if (result.equals("该测试不存在！")) formatter(true, new Mixture<>(result, FontStyle.darkRedStyle));
+                        else if (result.equals("所有问题已被移除！")) formatter(true, new Mixture<>("恭喜！您已成功完成该测试的所有题目！", FontStyle.greenStyle));
+                        else formatter(true, new Mixture<>("答题结束！这次一共作答" + result + "次，下次继续努力吧！", FontStyle.greenStyle));
                         break;
                     default:
                         break;
                 }
                 break;
             case "delete":
-                File file1 = new File(FileHandler.FOLDER_PATH + FileHandler.QUIZ_PATH + commands.get(2) + ".txt");
+                File file1 = new File(FileHandler.FOLDER_PATH + FileHandler.QUIZ_PATH + commands.get(2) + ".qiz");
                 if (JOptionPane.showConfirmDialog(null, "是否确定删除该测试？删除后该测试将无法被恢复！", "警告", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     if (file1.exists()) {
                         if (file1.delete()) formatter(true, new Mixture<>("已成功删除该测试", FontStyle.greenStyle));
@@ -253,10 +348,12 @@ public class CommandHeads {
                         String name = Paths.get(path.getFileName().toString()).toString();
                         String[] parts = name.split("\\.");
                         if (parts.length > 0) {
-                            name = parts[0]; // 获取不包含扩展名的文件名
+                            if (!name.equals(parts[0])&&parts[1].equals("qiz")) {
+                                name = parts[0]; // 获取不包含扩展名的文件名
+                                names.add(name);
+                                mainFrame.logger.info("文件名："+name);
+                            }
                         }
-                        names.add(name);
-                        mainFrame.logger.info("文件名："+name);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -269,28 +366,29 @@ public class CommandHeads {
                         output.append(content).append(", ");
                     }
                     output = new StringBuilder(output.substring(0, output.lastIndexOf(", ")));
-                    formatter(true, new Mixture<>("找到以下测试: \n", FontStyle.blackStyle), new Mixture<>(output.toString(), FontStyle.blueStyle));
-                } else formatter(true, new Mixture<>("暂无测试", FontStyle.blackStyle));
+                    formatter(true, new Mixture<>("找到以下测试: \n", FontStyle.plainStyle), new Mixture<>(output.toString(), FontStyle.blueStyle));
+                } else formatter(true, new Mixture<>("暂无测试", FontStyle.plainStyle));
                 break;
             default:
-                formatter(true, new Mixture<>("尽管这条消息肯定不会出现在控制台上，下面的break也没有实际用途，但是还是写上了。", FontStyle.blackStyle));
+                formatter(true, new Mixture<>("尽管这条消息肯定不会出现在控制台上，下面的break也没有实际用途，但是还是写上了。", FontStyle.plainStyle));
                 break;
         }
     }
 
     @Command
     public static void openai(ArrayList<String> commands) {
-        formatter(true, new Mixture<>("请等待，正在请求中......", FontStyle.blackStyle));
+        formatter(true, new Mixture<>("请等待，正在请求中......", FontStyle.plainStyle));
         String content = commands.get(1);
         clearInput();
         Response response = Connection.question(content);
         formatter(true, new Mixture<>("CompletionTokens: " + response.getUsage().getCompletionTokens()
                 + "        " + "Model: " + response.getModel() + "        " + "Content: \n" +
-                response.getChoices().getMessage().getContent(), FontStyle.blackStyle));
+                response.getChoices().getMessage().getContent(), FontStyle.plainStyle));
     }
 
     @Command
     public static void notification(ArrayList<String> commands){
+        //这个指令下面还有各种奇奇怪怪的bug，但是不想修了
         try {
             String command_2 = commands.get(1);
             String _string_switcher_2 = FuzzyMatcher.fuzzyMatch(command_2, Arrays.asList("add", "remove", "finished", "unfinished"));
@@ -343,7 +441,7 @@ public class CommandHeads {
                                     }
                                     int lengthOfN;//字面意思，为换行所预留的长度
                                     if (index != 1) {
-                                        dsdNotification.insertString(length, "\n", FontStyle.blackStyle);
+                                        dsdNotification.insertString(length, "\n", FontStyle.plainStyle);
                                         lengthOfN = 1;
                                         length -= 1;//不知道为什么，但是这么加就能用了。
                                     } else
@@ -352,7 +450,7 @@ public class CommandHeads {
                                     else dsdNotification.insertString(length + lengthOfN, "[×]", FontStyle.darkRedStyle);
                                     n.getContent().append(dsdNotification, length + lengthOfN + 3);
                                     if (index == 1)
-                                        dsdNotification.insertString(n.getContent().contentToString().length() + 3, "\n", FontStyle.blackStyle);
+                                        dsdNotification.insertString(n.getContent().contentToString().length() + 3, "\n", FontStyle.plainStyle);
                                 }
                             } else {
                                 NotificationFileHandler.append(n.toString());
@@ -361,7 +459,7 @@ public class CommandHeads {
                                 else
                                     dsdNotification.insertString(dsdNotification.getLength(), "[×]", FontStyle.darkRedStyle);
                                 n.getContent().append(dsdNotification, dsdNotification.getLength());
-                                dsdNotification.insertString(dsdNotification.getLength(), "\n", FontStyle.blackStyle);
+                                dsdNotification.insertString(dsdNotification.getLength(), "\n", FontStyle.plainStyle);
                                 //startDate和endDate暂未加入使用
                             }
                             formatter(true, new Mixture<>("Notification added Successfully!", FontStyle.greenStyle));
@@ -473,7 +571,7 @@ public class CommandHeads {
                 priv.samera2022.module.config.ConfigHandler.reload();
                 break;
             default:
-                formatter(true, new Mixture<>("尽管这条消息肯定不会出现在控制台上，下面的break也没有实际用途，但是还是写上了。", FontStyle.blackStyle));
+                formatter(true, new Mixture<>("尽管这条消息肯定不会出现在控制台上，下面的break也没有实际用途，但是还是写上了。", FontStyle.plainStyle));
                 break;
         }
     }
@@ -507,10 +605,10 @@ public class CommandHeads {
                             if (content.contains("Optifine"))
                                 formatter(true, new Mixture<>("Optifine已安装！\n", FontStyle.darkRedStyle));
                             else
-                                formatter(true, new Mixture<>("Optifine未安装。\n", FontStyle.blackStyle));
+                                formatter(true, new Mixture<>("Optifine未安装。\n", FontStyle.plainStyle));
                             break;
                         case "Thread: Client thread":
-                            formatter(true, new Mixture<>("客户端进程(Client Thread)报错！\n", FontStyle.blackStyle));
+                            formatter(true, new Mixture<>("客户端进程(Client Thread)报错！\n", FontStyle.plainStyle));
                             break;
                     }
                 }
@@ -520,13 +618,13 @@ public class CommandHeads {
                                     "\n模组注册名: " + arr[2] + "\n模组名称: " + arr[4], FontStyle.darkRedStyle),
                             new Mixture<>("\n分析指示：可能该模组出现异常或存在模组互相冲突\n" +
                                     "报错切片如下：\n" + t + "\n" +
-                                    "该异常位于第" + line + "行", FontStyle.blackStyle));
+                                    "该异常位于第" + line + "行", FontStyle.plainStyle));
                 } else if (t.contains("unable to find valid certification path to requested target")||t.contains("PKIX path building failed")) {
                     formatter(true, new Mixture<>("\n异常可能点：Java出现异常。",FontStyle.darkRedStyle), new Mixture<>(
                             "可能原因（仅供参考）：这个问题的根本原因是你安装JDK时，Java\\jar 1.8.0_141\\lib\\ext\\里面缺少了一个安全凭证jssecacerts证书文件，通过运行下面类可以生成证书，将生成的证书放在Java\\jar 1.8.0_141\\lib\\ext\\这个目录下，重启编译器就可以解决。\n" +
                             "可能的解决办法：" +
                             "1. (实践可行)重新安装Java" +
-                            "2. 生成安全证书并放入jre相应路径下，参照网页https://blog.csdn.net/weixin_44519124/article/details/119909354",FontStyle.blackStyle));
+                            "2. 生成安全证书并放入jre相应路径下，参照网页https://blog.csdn.net/weixin_44519124/article/details/119909354",FontStyle.plainStyle));
                 }
             }
         } catch (IOException e) {
@@ -547,7 +645,7 @@ public class CommandHeads {
                     File[] filesO = new File(commands.get(3)+"\\optional\\").listFiles();
                     int optionalMods = filesO==null ? 0 : filesO.length;
                     if (filesN != null && filesN.length > 0) {
-                        formatter(true,new Mixture<>("检验中，存在下载内容。",FontStyle.blackStyle));
+                        formatter(true,new Mixture<>("检验中，存在下载内容。",FontStyle.plainStyle));
                         int mods = priv.samera2022.module.gadgets.mc.modpack.download.browser.Download.getNum(commands.get(2));
                         if (filesN.length+optionalMods==mods) {
                             formatter(true,new Mixture<>("模组全部下载完成，共"+mods+"个！",FontStyle.greenStyle));
@@ -561,7 +659,7 @@ public class CommandHeads {
                     if (Download.ERROR_LIST.size()!=0) {
                         formatter(true,new Mixture<>("下载未完成，失败文件列表如下所示：",FontStyle.darkRedStyle));
                         for (HashMap<String,Object> map : Download.ERROR_LIST){
-                            formatter(true, new Mixture<>("\nmodId: "+map.get(Concept.PROJECT_ID)+"\nfileId: "+map.get(Concept.FILE_ID)+"\nrequired: "+map.get(Concept.REQUIRED)+"\n--------",FontStyle.blackStyle));
+                            formatter(true, new Mixture<>("\nmodId: "+map.get(Concept.PROJECT_ID)+"\nfileId: "+map.get(Concept.FILE_ID)+"\nrequired: "+map.get(Concept.REQUIRED)+"\n--------",FontStyle.plainStyle));
                         }
                     }
                     break;
@@ -594,7 +692,9 @@ public class CommandHeads {
                         " - [Released] - [0.0.4.1] - 2024-02-08 18:44\n" +
                         " - [Released] - [0.0.4.2] - 2024-02-20 13:22\n" +
                         " - [Released] - [0.0.4.3] - 2024-05-05 15:00\n" +
-                        " - [Released] - [0.0.5] - 2024-05-26 21:50" +
+                        " - [Released] - [0.0.5] - 2024-05-26 21:50\n" +
+                        " - [Released] - [0.0.5.1] - 2024-06-10 21:03\n" +
+                        " - [Unreleased] - [0.0.5.2] - 2024-??-?? ??:??" +
                         "",FontStyle.plainStyle));
                 break;
             case "show":
@@ -636,11 +736,11 @@ public class CommandHeads {
      * @author Samera2022
      * 使用formatter的目的是为了更方便地输出,举例如下。
      * 这是一个来自print的标准输出方案：
-     * output(new Mixture[]{new Mixture<>(content, FontStyle.blackStyle)}, delete);
+     * output(new Mixture[]{new Mixture<>(content, FontStyle.plainStyle)}, delete);
      * 这种输出方案不仅会让编译器提示Unchecked assignment: 'priv.samera2022.module.Mixture[]' to 'priv.samera2022.module.Mixture<java.lang.String,javax.swing.text.Style>[]'，
      * 而且还无法使用@SafeVarargs注解来消除，因为该方法参数是固定的，不是可变参数方法。
      * 而使用formatter的方案如下：
-     * formatter(delete,new Mixture<>(content, FontStyle.blackStyle));
+     * formatter(delete,new Mixture<>(content, FontStyle.plainStyle));
      * 不仅不需要新建数组，而且可以利用可变参数的函数在调用的过程中就产生一个抽象的数组来输出，
      * 而这个数组在可变参数的函数中被套上了Mixture<String,Style>的泛型，就可以使用@SafeVarargs提示已经除去了堆污染和泛型错误。
      * 简单地来解释，就是 多个抽象元素(具体元素也可以，只不过cast了也一样)->调用可变参数函数->(在可变参数函数中)形成数组，并在这个时候对数组加上泛型cast->警告用@SafeVarargs消除

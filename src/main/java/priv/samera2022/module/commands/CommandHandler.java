@@ -1,12 +1,15 @@
 package priv.samera2022.module.commands;
 
 import priv.samera2022.module.FuzzyMatcher;
+import priv.samera2022.module.config.ConfigHandler;
 import priv.samera2022.module.font.FontStyle;
 import priv.samera2022.module.annotation.Command;
 import priv.samera2022.module.commands.registry.CommandHeads;
 
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Style;
+import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -18,6 +21,7 @@ import static priv.samera2022.module.mainFrame.dsdFileContent;
 public class CommandHandler {
     private static final ArrayList<String> COMMAND_NAME = new ArrayList<>();
     private static final HashMap<String, Method> NAME_COMMAND_MAP = new HashMap<>();
+    private static Style errorFont;
 
     static {
         Method[] methods = CommandHeads.class.getMethods();
@@ -31,6 +35,9 @@ public class CommandHandler {
                 NAME_COMMAND_MAP.put(name, method);
             }
         }
+        if (ConfigHandler.CONFIG.isDarkMode())
+            errorFont = FontStyle.orangeStyle;
+        else errorFont = FontStyle.blueStyle;
     }
 
     public static void handleCommands(ArrayList<String> commands) {
@@ -63,9 +70,9 @@ public class CommandHandler {
 
     private static void _fuzzyMatchInfo(DefaultStyledDocument dsdFileContent, String command) throws BadLocationException {
         _timePrefix(dsdFileContent);
-        dsdFileContent.insertString(dsdFileContent.getLength(), "\nCouldn't find that command! \nExecuting Command \"", FontStyle.blueStyle);
+        dsdFileContent.insertString(dsdFileContent.getLength(), "\nCouldn't find that command! \nExecuting Command \"", errorFont);
         dsdFileContent.insertString(dsdFileContent.getLength(), command, FontStyle.darkRedStyle);
-        dsdFileContent.insertString(dsdFileContent.getLength(), "\"!", FontStyle.blueStyle);
+        dsdFileContent.insertString(dsdFileContent.getLength(), "\"!", errorFont);
 //        dsdFileContent.insertString(dsdFileContent.getLength(), "\nCouldn't find that command! Guess you want to use command \"", FontStyle.blueStyle);
 //        dsdFileContent.insertString(dsdFileContent.getLength(), command, FontStyle.darkRedStyle);
 //        dsdFileContent.insertString(dsdFileContent.getLength(), "\"!", FontStyle.blueStyle);

@@ -24,7 +24,7 @@ public class NotificationContent {
                 copy = copy.substring(colorHead);
             }
             while (!copy.isEmpty()) {
-//                Style style = FontStyle.blackStyle;
+//                Style style = FontStyle.plainStyle;
                 int colorEnd = copy.indexOf("]");
                 String colorType = copy.substring(1, colorEnd);//得到的是不带中括号的字符串
                 Style style = FontHandler.resolveAttribute(copy.substring(0,colorEnd+1));
@@ -53,7 +53,7 @@ public class NotificationContent {
 //                        break;
 //                    case "black":
 //                    case "BLACK":
-//                        style = FontStyle.blackStyle;
+//                        style = FontStyle.plainStyle;
 //                        break;
 //                    default:
 //                        for (int i = 0; i < FontStyle.colorStyles.length; i++) {
@@ -61,7 +61,7 @@ public class NotificationContent {
 //                            if (colorType.equals(element.getName())) {
 //                                style = element;
 //                            } else if (i == FontStyle.colorStyles.length - 1) {
-//                                style = FontStyle.blackStyle;
+//                                style = FontStyle.plainStyle;
 //                                mainFrame.logger.warn("Color Not Found.");
 //                                break;
 //                            }
@@ -79,7 +79,7 @@ public class NotificationContent {
                 in1 = in1 + content.length();
             }
         } else {
-            dsd.insertString(index,content,FontStyle.blackStyle);
+            dsd.insertString(index,content,FontStyle.plainStyle);
         }
     }//该方法体可能存在问题，需要检查！
     public String contentToString() {

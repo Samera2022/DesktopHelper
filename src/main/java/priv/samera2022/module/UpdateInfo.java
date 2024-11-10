@@ -192,6 +192,23 @@ public class UpdateInfo {
             " - 由于倒计时的加入，Panel的大小和位置大多都发生了改变。如要查询历史版本，则需回到v0.0.5版本。\n" +
             " - 剩余未开发的功能与bug将会被封存，直至下一次重新激活。\n";
     //TODO 剩余功能计划已写在UpdateInfo.java的TODO注释行（部分）和纸上（部分）保存！
+    public static String version_0_0_5_2 =
+            " - [Unreleased] - [0.0.5.2] - 2024-11-10 14:24\n" +
+            "##[Added]\n" +
+            " - 增加了Quiz中累计答对五次自动不再考察该题的逻辑。\n" +
+            " - 优化了Quiz start的相关指令信息，增加了指令的默认参数。\n" +
+            " - 支持自定义背景了！由config.cfg中的enable_characterization(boolean)和bg_path(String)来决定。\n" +
+            "（注：frame指令所创建的窗体暂还未进行支持适配）\n" +
+            " - 支持深色模式了！由config.cfg中的dark_mode(boolean)来决定。\n" +
+            "##[Changed]\n" +
+            " - 修正了先前输入框内默认文字不清除的问题。\n" +
+            " - 修复了一些logger记录顺序的小问题。\n" +
+            " - 压缩了Logger输出中的ClassName，将module及module之前的内容用...代过。\n" +
+            " - 修正了Quiz中使用list指令误将文件夹和其他文件一起识别的相关逻辑，同时quiz文件后缀名更改为qiz。\n" +
+            " - 修复了窗体组件位置的bug叠bug的问题。之前ver0.0.5.1的时候侥幸有两个bug叠在一起才导致窗体正常显示，" +
+            "这次把两个bug都修了。\n[bug发生的原因：既使用了默认布局管理器（自上而下，自左而右），又填写了错误的绝对窗体坐标。" +
+            "恰巧本来错误的绝对窗体坐标被默认布局管理器压制了，才导致组件显示才维持正常。]";
+
     private static final String warns =
             "警示: " +
             "-后续指令注册时，应在Info中向COMMANDS加入该指令以进行模糊匹配！" +
@@ -201,8 +218,8 @@ public class UpdateInfo {
             "-在各个Listener中，你其实有很多变量都是可以调用的。很多时候如果这个方法用这个变量不行，可以试试用另外一个方法调用另外一个变量来解决。" +
             "比如说在模糊判断输出Couldn't find that command! Guess...的时候，用message会导致时间和内容吞并，但是用dsdFileContent附加时间就可以解决。";
     public static final String[] UpdateInfo = new String[]{version_0_0_1, version_0_0_2, version_0_0_3, version_0_0_3_1, version_pre_0_0_4,
-            version_0_0_4,version_0_0_4_1,version_0_0_4_2,version_0_0_4_3,version_0_0_5,version_0_0_5_1};
+            version_0_0_4,version_0_0_4_1,version_0_0_4_2,version_0_0_4_3,version_0_0_5,version_0_0_5_1,version_0_0_5_2};
     public static void main(String[] args) {
-        System.out.println(version_0_0_5_1);
+        System.out.println(version_0_0_5_2);
     }
 }

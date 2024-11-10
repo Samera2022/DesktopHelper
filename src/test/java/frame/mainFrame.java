@@ -1,8 +1,9 @@
-package priv.samera2022.module;
+package frame;
 
+import priv.samera2022.module.DropTarget;
+import priv.samera2022.module.Logger;
+import priv.samera2022.module.Mixture;
 import priv.samera2022.module.commands.registry.CommandHeads;
-import priv.samera2022.module.config.Config;
-import priv.samera2022.module.config.ConfigHandler;
 import priv.samera2022.module.file.FileHandler;
 import priv.samera2022.module.font.FontStyle;
 import priv.samera2022.module.keylisteners.EnterKeyListener;
@@ -42,7 +43,6 @@ public class mainFrame {
     }
 
     public static void frame() throws BadLocationException {
-        boolean hasBg = ConfigHandler.CONFIG.getBgPath() != null;
         //警示：对于控件内文字的更改，不应采用xxx.setDocument(xxx)，而应该修改该控件内的DefaultStyledDocument！
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = (int) screenSize.getWidth();
@@ -54,11 +54,19 @@ public class mainFrame {
         frame.setLocation(x, 0);
         frame.setUndecorated(true);
         frame.enableInputMethods(false);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel totalPanel = new JPanel(new BorderLayout());
         totalPanel.setSize(300, 700);
         totalPanel.setLocation(0, 0);
         totalPanel.setLayout(null);
-        //修改为绝对布局的，需要对每个组件重新设置Location（绝对布局也是从窗体的左上角开始计算）
+        //修改为绝对布局的，需要对每个组件重新设置Location
+        totalPanel.setOpaque(false);
+
+        //<---BACKGROUND--->
+        JLabel background = new JLabel(new ImageIcon("D:\\_S_A_M\\Desktop\\1.png"));
+        background.setBounds(0,0,300,700);
+        background.setOpaque(true);
+        background.setIconTextGap(0);
 
         //<---INPUT_ANALYZE--->
         JTextArea jtaInput = new JTextArea(dsdInput);
@@ -68,12 +76,16 @@ public class mainFrame {
         jtaInput.setWrapStyleWord(true);
         JScrollPane sp1 = new JScrollPane();
         sp1.setViewportView(jtaInput);
+        sp1.getViewport().setOpaque(false);
+        sp1.setOpaque(false);
+        jtaInput.setOpaque(false);
         //        JScrollPane sp1 = new JScrollPane(jtaInput);
         //        ScrollPane sp1 = new ScrollPane();
         //注：JScrollPane的构造方式和ScrollPane的构造方式不一样。
         //        sp1.add(jtaInput);
         //注：JScrollPane在构造的时候必须要传入参数，不像ScrollPane可以后续通过pane.add();的方式再加入组件
         //注：JScrollPane虽然也能使用pane.add();但是似乎不起什么作用。应该使用sp1.setViewportView(Component);
+//        sp1.setPreferredSize(new Dimension(301,100));
         sp1.setBounds(0,0,301,100);
         //注：设计非整百数是为了让sp1的右侧能够紧贴窗体，虽然我也不知道为什么会发生这种情况
 //        sp1.setLocation(x,0);
@@ -81,8 +93,20 @@ public class mainFrame {
         //        sp1.setBounds(x,0,300,100);
         //注：JScrollPane不能使用ScrollPane的setSize来调整大小，否则大小设置总会出现问题
 
+
+//        JScrollPane scrollPane = new JScrollPane(jtaInput) {
+//            @Override
+//            protected void paintComponent(Graphics g) {
+//                super.paintComponent(g);
+//                // 允许背景显示为透明
+//            }
+//        };
+//        scrollPane.setBounds(x, 0, 300, 100);
+//        totalPanel.add(scrollPane);
+
         new java.awt.dnd.DropTarget(jtaInput, DnDConstants.ACTION_COPY_OR_MOVE, dtsInput);
         dsdInput.insertString(0, inputAsst, FontStyle.plainStyle);
+//        frame.add(sp1);
 
         //<---FILE_CONTENT_ANALYZE--->
         JTextPane jtpFileContent = new JTextPane(dsdFileContent); // 显示文件内容区域
@@ -90,7 +114,10 @@ public class mainFrame {
         jtpFileContent.setEditable(false);
         JScrollPane sp2 = new JScrollPane();
         sp2.setViewportView(jtpFileContent);
-        sp2.setBounds(0, 99, 301, 360);
+        sp2.getViewport().setOpaque(false);
+        sp2.setOpaque(false);
+        jtpFileContent.setOpaque(false);
+        sp2.setBounds(0, 99, 301, 400-40);
         new java.awt.dnd.DropTarget(jtpFileContent, DnDConstants.ACTION_COPY_OR_MOVE, dtsFileContent);
 
         //<---Countdown--->
@@ -108,9 +135,19 @@ public class mainFrame {
             dsdCountdown.insertString(0,"加油！",FontStyle.plainStyle);
             else dsdCountdown.insertString(0,"高考结束了！",FontStyle.plainStyle);
         jtpCountdown.setEditable(false);
+//        JScrollPane spCd = new JScrollPane();
+////        spCd.add(jtpCountdown);
+//        spCd.setViewportView(jtpCountdown);
+//        spCd.getViewport().setOpaque(false);
+//        spCd.setOpaque(false);
+//        jtpCountdown.setOpaque(false);
+        jtpCountdown.setEditable(false);
         JScrollPane spCd = new JScrollPane();
         spCd.setViewportView(jtpCountdown);
-        spCd.setBounds(0, 458, 301, 42);
+        spCd.getViewport().setOpaque(false);
+        spCd.setOpaque(false);
+        jtpCountdown.setOpaque(false);
+        spCd.setBounds(0, 460, 301, 40);
 
         //<---Notification--->
         JTextPane jtpNotification = new JTextPane(dsdNotification);
@@ -129,41 +166,18 @@ public class mainFrame {
         jtpNotification.setEditable(false);
         JScrollPane sp3 = new JScrollPane();
         sp3.setViewportView(jtpNotification);
+        sp3.getViewport().setOpaque(false);
+        sp3.setOpaque(false);
+        jtpNotification.setOpaque(false);
         sp3.setBounds(0, 497, 301, 204);
 
-        //<---hasBg--->
-        totalPanel.setOpaque(!hasBg);
-        sp2.getViewport().setOpaque(!hasBg);
-        sp2.setOpaque(!hasBg);
-        jtpFileContent.setOpaque(!hasBg);
-        spCd.getViewport().setOpaque(!hasBg);
-        spCd.setOpaque(!hasBg);
-        jtpCountdown.setOpaque(!hasBg);
-        sp3.getViewport().setOpaque(!hasBg);
-        sp3.setOpaque(!hasBg);
-        jtpNotification.setOpaque(!hasBg);
-
-        //WARN: BACKGROUND一定要在最后才被totalPanel添加
         //<---ADDING AREA--->
         totalPanel.add(sp1);
         totalPanel.add(sp2);
         totalPanel.add(spCd);
         totalPanel.add(sp3);
+        totalPanel.add(background);
 
-        //<---CHARACTERIZED SETTING--->
-        if (ConfigHandler.CONFIG.isEnableCharacterization()) {
-            if (ConfigHandler.CONFIG.isDarkMode()) {
-                jtaInput.setSelectedTextColor(new Color(248, 149, 149, 255));
-                jtaInput.setBackground(Info.DARK_MODE);
-            }
-            if (hasBg) {
-                JLabel background = new JLabel(new ImageIcon(ConfigHandler.CONFIG.getBgPath()));
-                background.setBounds(0, 99, 300, 601);
-                background.setOpaque(true);
-                background.setIconTextGap(0);
-                totalPanel.add(background);
-            }
-        }
         //<---窗体尾--->
         jtaInput.addKeyListener(new EnterKeyListener());
         jtaInput.addFocusListener(new FocusListener() {
@@ -192,7 +206,6 @@ public class mainFrame {
             }
         });
         frame.add(totalPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         totalPanel.revalidate();
         totalPanel.repaint();

@@ -29,7 +29,7 @@ public class FileHandler {
 
     //还是用init方法比较好，相较static块而言更方便初始化。
     static {
-
+        System.out.println("---Pre Logger Record---");
         ArrayList<File> drives = new ArrayList<>();
         drives.addAll(Arrays.asList(File.listRoots()));
         for (int i = 0; i<drives.size(); i++){
@@ -44,7 +44,8 @@ public class FileHandler {
         }
 //        FOLDER_PATH = JOptionPane.showInputDialog(null, "Specified A Disk!", "Disk D Not Found!", JOptionPane.INFORMATION_MESSAGE);        //输入对话框
         FOLDER_PATH = FOLDER_PATH + "_S_A_M/Files/AppData/DesktopHelper/";
-        mainFrame.logger.info("Current AppData Path: "+FOLDER_PATH);
+        FOLDER_PATH = FOLDER_PATH.replace('\\','/');
+        System.out.println("[PRE-L] Current AppData Path: "+FOLDER_PATH);
 
         try {
             File folder = new File(FOLDER_PATH);
@@ -74,6 +75,7 @@ public class FileHandler {
             fixError(config, false);
             if (FileHandler.read(FOLDER_PATH + CONFIG_PATH + CONFIG_NAME).length() == 0)
                 priv.samera2022.module.config.ConfigHandler.write();
+            System.out.println("---Pre Logger Record---");
 //            priv.samera2022.module.config.ConfigHandler.UpdateIfPossible();
         } catch (IOException e) {
             e.printStackTrace();
@@ -85,27 +87,27 @@ public class FileHandler {
         String call = isDirectory ? "Folder" : "File";
         String call2 = !isDirectory ? "Folder" : "File";
         if (!file.exists()) {
-            mainFrame.logger.warn(call + " " + file.getName() + " doesn't exist!");
-            mainFrame.logger.info("Creating new " + call + " " + file.getName() + "...");
+            mainFrame.logger.pre("[WARN] "+call + " " + file.getName() + " doesn't exist!");
+            mainFrame.logger.info("[INFO] "+"Creating new " + call + " " + file.getName() + "...");
             if (isDirectory) {
-                if (file.mkdirs()) mainFrame.logger.info("Create new folder " + file.getName() + " Successfully!");
-                else mainFrame.logger.warn("Creating new folder " + file.getName() + " Unsuccessfully!");
+                if (file.mkdirs()) mainFrame.logger.info("[INFO] "+"Create new folder " + file.getName() + " Successfully!");
+                else mainFrame.logger.pre("[WARN] "+"Creating new folder " + file.getName() + " Unsuccessfully!");
             } else {
-                if (file.createNewFile()) mainFrame.logger.info("Create new file " + file.getName() + " Successfully!");
-                else mainFrame.logger.warn("Creating new file " + file.getName() + " Unsuccessfully!");
+                if (file.createNewFile()) mainFrame.logger.info("[INFO] "+"Create new file " + file.getName() + " Successfully!");
+                else mainFrame.logger.pre("[WARN] "+"Creating new file " + file.getName() + " Unsuccessfully!");
             }
         } else {
             if (file.isDirectory() != isDirectory) {
-                mainFrame.logger.warn("There's already " + call2 + " " + file.getName() + " exists! Deleting...");
-                if (file.delete()) mainFrame.logger.info("Delete " + call2 + " " + file.getName() + " Successfully!");
-                else mainFrame.logger.warn("Delete " + call2 + " " + file.getName() + " Unsuccessfully!");
-                mainFrame.logger.info("Creating new " + call + " " + file.getName() + "...");
+                mainFrame.logger.pre("[WARN] "+"There's already " + call2 + " " + file.getName() + " exists! Deleting...");
+                if (file.delete()) mainFrame.logger.info("[INFO] "+"Delete " + call2 + " " + file.getName() + " Successfully!");
+                else mainFrame.logger.pre("[WARN] "+"Delete " + call2 + " " + file.getName() + " Unsuccessfully!");
+                mainFrame.logger.info("[INFO] "+"Creating new " + call + " " + file.getName() + "...");
                 if (isDirectory) {
-                    if (file.mkdirs()) mainFrame.logger.info("Create new folder " + file.getName() + " Successfully!");
-                    else mainFrame.logger.warn("Creating new folder " + file.getName() + " Unsuccessfully!");
+                    if (file.mkdirs()) mainFrame.logger.info("[INFO] "+"Create new folder " + file.getName() + " Successfully!");
+                    else mainFrame.logger.pre("[WARN] "+"Creating new folder " + file.getName() + " Unsuccessfully!");
                 } else {
-                    if (file.createNewFile()) mainFrame.logger.info("Create new file " + file.getName() + " Successfully!");
-                    else mainFrame.logger.warn("Creating new file " + file.getName() + " Unsuccessfully!");
+                    if (file.createNewFile()) mainFrame.logger.info("[INFO] "+"Create new file " + file.getName() + " Successfully!");
+                    else mainFrame.logger.pre("[WARN] "+"Creating new file " + file.getName() + " Unsuccessfully!");
                 }
             }
         }

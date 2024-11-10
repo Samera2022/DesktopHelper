@@ -8,6 +8,19 @@ import java.util.Arrays;
 
 public class Test {
     public static void main(String[] args) {
+        String binaryString = "111011";
+        int decimal = Integer.parseInt(binaryString, 2);
+        System.out.println("十进制数为: " + decimal);
+    }
+
+    public static void main8(String[] args) {
+        ArrayList<Integer> array = new ArrayList<>();
+        array.add(1);
+        array.add(2);
+        array.add(3);
+        System.out.println(array);
+    }
+    public static void main7(String[] args) {
         String input = "{\"value1\",\"value2\"}";
         String[] output = convertStringToArray(input);
 

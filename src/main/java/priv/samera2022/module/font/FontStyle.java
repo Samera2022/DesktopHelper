@@ -1,5 +1,7 @@
 package priv.samera2022.module.font;
 
+import priv.samera2022.module.config.ConfigHandler;
+
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
@@ -18,6 +20,7 @@ public class FontStyle {
     public static final Style darkRedStyle = sc.addStyle("RED",null);
     public static final Style greyStyle = sc.addStyle("GREY",null);
     public static final Style greenStyle = sc.addStyle("GREEN",null);
+    public static final Style orangeStyle = sc.addStyle("ORANGE",null);
 
     public static final Style[] colorStyles = new Style[]{blueStyle,yellowStyle,darkRedStyle,greyStyle,greenStyle,plainStyle};
 
@@ -29,8 +32,10 @@ public class FontStyle {
 //    public static final Style MDHeadingStyle_5 = sc.addStyle("HEADING_5",null);
 //    public static final Style MDHeadingStyle_6 = sc.addStyle("HEADING_6",null);
     static {
-
-        register(plainStyle,Color.BLACK,false,14);
+        if (ConfigHandler.CONFIG.isDarkMode())
+            register(plainStyle,Color.WHITE,false,14);
+        else
+            register(plainStyle,Color.BLACK,false,14);
         register(yamlBlueStyle,Color.BLUE,true, 14);
 
         register(specialStyle,Color.RED, true, 18);
@@ -41,6 +46,7 @@ public class FontStyle {
         register(yellowStyle,Color.YELLOW,false,14);
         register(greyStyle,Color.GRAY,false,14);
         register(greenStyle,Color.GREEN,false,14);
+        register(orangeStyle,Color.ORANGE,false,14);
 
         register(MDStyle,Color.BLACK,true,14);
 

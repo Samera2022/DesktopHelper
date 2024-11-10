@@ -52,7 +52,7 @@ public class FontHandler {
             }
             return gf.asStyle();
         }
-        else return FontStyle.blackStyle;
+        else return FontStyle.plainStyle;
     }
 
     public static String colorToString(Color color){
