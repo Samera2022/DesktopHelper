@@ -694,7 +694,7 @@ public class CommandHeads {
                         " - [Released] - [0.0.4.3] - 2024-05-05 15:00\n" +
                         " - [Released] - [0.0.5] - 2024-05-26 21:50\n" +
                         " - [Released] - [0.0.5.1] - 2024-06-10 21:03\n" +
-                        " - [Unreleased] - [0.0.5.2] - 2024-??-?? ??:??" +
+                        " - [Released] - [0.0.5.2] - 2024-11-10 14:24" +
                         "",FontStyle.plainStyle));
                 break;
             case "show":

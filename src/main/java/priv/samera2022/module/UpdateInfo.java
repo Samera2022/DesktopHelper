@@ -193,14 +193,14 @@ public class UpdateInfo {
             " - 剩余未开发的功能与bug将会被封存，直至下一次重新激活。\n";
     //TODO 剩余功能计划已写在UpdateInfo.java的TODO注释行（部分）和纸上（部分）保存！
     public static String version_0_0_5_2 =
-            " - [Unreleased] - [0.0.5.2] - 2024-11-10 14:24\n" +
-            "##[Added]\n" +
+            " - [Released] - [0.0.5.2] - 2024-11-10 14:24\n" +
+            "## [Added]\n" +
             " - 增加了Quiz中累计答对五次自动不再考察该题的逻辑。\n" +
             " - 优化了Quiz start的相关指令信息，增加了指令的默认参数。\n" +
             " - 支持自定义背景了！由config.cfg中的enable_characterization(boolean)和bg_path(String)来决定。\n" +
             "（注：frame指令所创建的窗体暂还未进行支持适配）\n" +
             " - 支持深色模式了！由config.cfg中的dark_mode(boolean)来决定。\n" +
-            "##[Changed]\n" +
+            "## [Changed]\n" +
             " - 修正了先前输入框内默认文字不清除的问题。\n" +
             " - 修复了一些logger记录顺序的小问题。\n" +
             " - 压缩了Logger输出中的ClassName，将module及module之前的内容用...代过。\n" +
