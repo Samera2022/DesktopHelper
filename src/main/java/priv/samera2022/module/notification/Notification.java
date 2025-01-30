@@ -32,6 +32,7 @@ public class Notification {
         return endDate;
     }
 
+    public boolean hasEndDate(){ return endDate.equals("N/A");}
     @Override
     public String toString(){
         return "{"+isFinished+","+startDate+","+endDate+"}"+content.getContent();

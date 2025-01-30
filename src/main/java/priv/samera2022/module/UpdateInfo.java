@@ -1,16 +1,14 @@
 package priv.samera2022.module;
 
 public class UpdateInfo {
-    private static final String version_0_0_1 =
-            " - [Unreleased] - [0.0.1] - [Unknown]\n" +
+    public static final Version version_0_0_1 = new Version(false, "0.0.1", "Unknown",
             "## [Added]\n" +
             " - 加入文件内容显示系统！可拖拽显示以txt，yml结尾的文件内容。其中txt是报错日志且包含报错日志重点信息，那么该行将会被高亮显示。\n" +
             "## [Warns]\n" +
             " - 该识别系统存在缺陷，文件名如果过长则将不会进行识别。\n" +
             "## [Todos]\n" +
-            " - 增加MD语法的显示，目前由于MD语法比较复杂没有完成。";
-    private static final String version_0_0_2 =
-            " - [Unreleased] - [0.0.2] - 2023-08-07 15:58\n" +
+            " - 增加MD语法的显示，目前由于MD语法比较复杂没有完成。");
+    public static final Version version_0_0_2 = new Version(false, "0.0.2", "2023-08-07 15:58",
             "## [Added]\n" +
             " - 加入输入栏！目前支持拖拽文件进输入栏以快捷键入文件的绝对路径，或者手动敲入路径。具体功能未实现，仅实现其窗体\n" +
             "## [Changed]\n" +
@@ -19,9 +17,8 @@ public class UpdateInfo {
             " - 修改了大量的bug，终于支持让输入栏与文件内容显示系统正常工作。\n" +
             "## [Warns]\n" +
             " - 在进行开发时，如果要对控件内的文字进行修改，应当做的操作是修改该控件内的DefaultStyledDocument，" +
-            "即dsd.xxxxxx。而不应该是修改Document，即xxx.setDocument(xx)，修改Document的行为是错误的。";
-    private static final String version_0_0_3 =
-            " - [Released] - [0.0.3] - 2023-08-12 12:12\n" +
+            "即dsd.xxxxxx。而不应该是修改Document，即xxx.setDocument(xx)，修改Document的行为是错误的。");
+    public static final Version version_0_0_3 = new Version("0.0.3", "2023-08-12 12:12",
             "## [Added]\n" +
             " - 增加Notification栏目与notification系列指令！详情见Descriptions。\n" +
             " - 增加彩色系统！现在你可以用花花绿绿的颜色来妆点你的文字了！详情见Descriptions。\n" +
@@ -30,17 +27,16 @@ public class UpdateInfo {
             "Notification应当包含[(boolean)isFinished,(String)startDate]和(String)endDate。前二者为可选，后者为必选。" +
             "详细指令使用参见notification help指令。\n" +
             " - [彩色系统] 应当注意的是，目前颜色仍是固定的，有 黑 蓝 黄 深红 灰 绿可选。" +
-            "后续将考虑增加自定义颜色系统，可选颜色在FontStyle类中。彩色系统的支持范围为Notification栏目。\n";
-    private static final String version_0_0_3_1 =
-            " - [Released] - [0.0.3.1] - 2023-08-26 09:58\n" +
+            "后续将考虑增加自定义颜色系统，可选颜色在FontStyle类中。彩色系统的支持范围为Notification栏目。");
+    //Todo: tons of BUGS to be solved
+    public static final Version version_0_0_3_1 = new Version("0.0.3.1", "2023-08-26 09:58",
             "## [Added]\n" +
             " - 增加模糊匹配机制！简化指令输入的时间，现在你只需要大概打出指令前几个字母就可以调用！\n" +
             " - 增加gadgets包（小工具包），可以向其中加入各种各样的小功能小工具！目前已加入ChemistryQuiz轨道表达式小测试！\n" +
             "## [Descriptions]\n" +
             " - 即将进行大规模底层逻辑重写，将会把该工程推送至v0.0.3.1分支保存!\n" +
-            " - 工程将会由Listener+switch的结构转为总线注册总线监听结构！\n";
-    private static final String version_pre_0_0_4 =
-            " - [Released] - [pre0.0.4] - 2023-09-03 16:48\n" +
+            " - 工程将会由Listener+switch的结构转为总线注册总线监听结构！");
+    public static final Version version_pre_0_0_4 = new Version("pre0.0.4", "2023-09-03 16:48",
             "## [Changed]&&[Descriptions]\n" +
             " - 总线更改完成！目前总线仅搭载print指令，故本版本尚为测试版本。总线更改完成后，可以在CommandHeads中使用Command注解，" +
             "同时填入必要的name参数，选填delete与hasTextOutput参数即可完成指令的注册。故Info中已移除ArrayList<String> COMMANDS，" +
@@ -53,9 +49,8 @@ public class UpdateInfo {
             "## [Warns]\n" +
             " - 潜在的危险：在EnterKeyListener.java中，为实现按下回车键后光标仍能恢复到第一行最前面的位置" +
             "（因为EnterKeyListener.java的keyPressed所能实现的功能皆在enter引发换行之前，所以只能在keyReleased进行调正）" +
-            "采用了isCommand进行判断进而删除dsd前面的内容。而使用isCommand未经过严谨的考量，可能存在一些意想不到的问题。";
-    private static final String version_0_0_4 =
-            " - [Released] - [0.0.4] - 2024-01-27 19:20\n" +
+            "采用了isCommand进行判断进而删除dsd前面的内容。而使用isCommand未经过严谨的考量，可能存在一些意想不到的问题。");
+    public static final Version version_0_0_4 = new Version("0.0.4", "2024-01-27 19:20",
             "## [Changed]&&[Description]\n" +
             "# Structure\n" +
             " - 注册指令变更。注册指令不再使用output(new Mixture[]{Mixture<>(String, Style)...}, Boolean);语句，" +
@@ -91,9 +86,8 @@ public class UpdateInfo {
             " - \"frame close\" 执行该指令后将会让拓展窗体变得不可见。但是通常情况下可以使用dispose来代替。\n" +
             " - \"frame dispose\" 执行该指令后将会关闭拓展窗体，并释放一部分资源。\n" +
             "# openai指令\n" +
-            " - \"openai <question>\" 执行该指令后将会联网请求openai模型<question>的内容，并等待回复。目前仅支持单一对话询问。";
-    private static final String version_0_0_4_1 =
-            " - [Released] - [0.0.4.1] - 2024-02-08 18:44\n" +
+            " - \"openai <question>\" 执行该指令后将会联网请求openai模型<question>的内容，并等待回复。目前仅支持单一对话询问。");
+    public static final Version version_0_0_4_1 = new Version("0.0.4.1", "2024-02-08 18:44",
             "## [Changed]\n" +
             " - Command注解已被简化，仅留下name()属性。\n" +
             " - 完善openai指令，将认证KEY等配置分离至config/gpt/default.json。\n" +
@@ -105,9 +99,8 @@ public class UpdateInfo {
             " - 添加config指令。目前支持的二级指令参数有:reload。用法见Usage。\n" +
             "## [Usage]\n" +
             "# config指令\n" +
-            " - \"config reload\" 执行该指令后将会重载config.cfg。";
-    private static final String version_0_0_4_2 =
-            " - [Released] - [0.0.4.2] - 2024-02-20 13:22\n" +
+            " - \"config reload\" 执行该指令后将会重载config.cfg。");
+    public static final Version version_0_0_4_2 = new Version("0.0.4.2", "2024-02-20 13:22",
             "## [Changed]\n" +
             " - 完善了mainFrame.ExceptionHandler()方法，但并未进行相关测试。\n" +
             " - web包更名为gpt包，原web包下HttpURLConnection.java更名为Connection.java\n" +
@@ -127,12 +120,11 @@ public class UpdateInfo {
             " - 考虑添加依赖缺失报错的模组下载处理逻辑。\n" +
             " - 或许应当考虑将关于mc的指令全部放在一级指令mc下面？\n" +
             "## [Warns]\n" +
-            " - Logger的线程提示有问题，需要解决！";
+            " - Logger的线程提示有问题，需要解决！");
     //TODO CommandHeads.java downloadModpacks()缺失文件输出以后再写
     //TODO config/ConfigHandler.java对于过时配置文件的逻辑并未加入，详见本String内被注释的行
     //TODO Config的压缩和解压指令尚未制作完全！举例：执行压缩指令将会直接得到压缩完的DesktopHelper文件夹，执行解压指令将会压缩的DesktopHelper文件夹解压到本机的DesktopHelper路径进行覆盖/增添。
-    private static final String version_0_0_4_3 =
-            " - [Released] - [0.0.4.3] - 2024-05-05 15:00\n" +
+    public static final Version version_0_0_4_3 = new Version("0.0.4.3", "2024-05-05 15:00",
             "## [Changed]\n" +
             " - 修改了quiz的一些逻辑，使其更加符合使用需要。\n" +
             "## [Added]\n" +
@@ -155,9 +147,8 @@ public class UpdateInfo {
             " - label指令加入待办列表。\n" +
             "## [Warns]\n" +
             " - \"quiz start <quizName> <isBreak> <useSimilarity>\" 指令中的<useSimilarity>默认改为false，因为相似算法仍然一定存在问题。\n" +
-            " - \"AminoAcidQuiz structure <isBreak>\" 指令依赖于.../quizzes/resources/amino_acids/下的图片来完成。";
-    public static final String version_0_0_5 =
-            " - [Released] - [0.0.5] - 2024-05-26 21:50\n" +
+            " - \"AminoAcidQuiz structure <isBreak>\" 指令依赖于.../quizzes/resources/amino_acids/下的图片来完成。");
+    public static final Version version_0_0_5 = new Version("0.0.5", "2024-05-26 21:50",
             "## [Changed]\n" +
             " - 修正了Logger的相关逻辑，使之可以正常使用。\n" +
             "## [Added]\n" +
@@ -177,10 +168,9 @@ public class UpdateInfo {
             "[&FF(fontFamily)]调整字体  [&FS<fontSize>]调整字号  [&XA]粗体  [&XB]斜体  [&XC]下划线  [&XD]删除线  " +
             "[&XE]上标  [&XF]下标  [&CF]字体颜色  [&CB]背景颜色  [&SA]段落上方留空大小  [&SB]段落下方留空大小  " +
             "[&FL]首行缩进  [&LI]段落左缩进  [&RI]段落右缩进  [&LS]行间距\n" +
-            " - 特别地，对于[&CF]和[&CB]两个与颜色相关的参数，使用时应当传入色彩信息[&CF(<R>,<G>,<B>)]，比如：[&CF(0,0,0)]。";
+            " - 特别地，对于[&CF]和[&CB]两个与颜色相关的参数，使用时应当传入色彩信息[&CF(<R>,<G>,<B>)]，比如：[&CF(0,0,0)]。");
     //TODO 修正存在错误的AminoAcidQuiz get(3)
-    public static String version_0_0_5_1 =
-            " - [Released] - [0.0.5.1] - 2024-06-10 21:03\n" +
+    public static final Version version_0_0_5_1 = new Version("0.0.5.1", "2024-06-10 21:03",
             "## [Added]\n" +
             " - 添加了version指令。\n" +
             " - 添加高考倒计时功能。\n" +
@@ -190,10 +180,9 @@ public class UpdateInfo {
             " - \"version show\" 从历史版号中按序号读取更新日志信息。\n" +
             "## [Warns]\n" +
             " - 由于倒计时的加入，Panel的大小和位置大多都发生了改变。如要查询历史版本，则需回到v0.0.5版本。\n" +
-            " - 剩余未开发的功能与bug将会被封存，直至下一次重新激活。\n";
+            " - 剩余未开发的功能与bug将会被封存，直至下一次重新激活。");
     //TODO 剩余功能计划已写在UpdateInfo.java的TODO注释行（部分）和纸上（部分）保存！
-    public static String version_0_0_5_2 =
-            " - [Released] - [0.0.5.2] - 2024-11-10 14:24\n" +
+    public static final Version version_0_0_5_2 = new Version("0.0.5.2","2024-11-10 14:24",
             "## [Added]\n" +
             " - 增加了Quiz中累计答对五次自动不再考察该题的逻辑。\n" +
             " - 优化了Quiz start的相关指令信息，增加了指令的默认参数。\n" +
@@ -207,7 +196,10 @@ public class UpdateInfo {
             " - 修正了Quiz中使用list指令误将文件夹和其他文件一起识别的相关逻辑，同时quiz文件后缀名更改为qiz。\n" +
             " - 修复了窗体组件位置的bug叠bug的问题。之前ver0.0.5.1的时候侥幸有两个bug叠在一起才导致窗体正常显示，" +
             "这次把两个bug都修了。\n[bug发生的原因：既使用了默认布局管理器（自上而下，自左而右），又填写了错误的绝对窗体坐标。" +
-            "恰巧本来错误的绝对窗体坐标被默认布局管理器压制了，才导致组件显示才维持正常。]";
+            "恰巧本来错误的绝对窗体坐标被默认布局管理器压制了，才导致组件显示才维持正常。]");
+    public static Version version_0_0_5_3 = new Version(false,"0.0.5.3","2024-11",
+            "## [Changed]\n" +
+            " - 将以往的更新日志文本全部替换为Version数据类型，使得对更新日志与版本的检索与操作变得更加方便。");
 
     private static final String warns =
             "警示: " +
@@ -217,9 +209,9 @@ public class UpdateInfo {
             "提示: " +
             "-在各个Listener中，你其实有很多变量都是可以调用的。很多时候如果这个方法用这个变量不行，可以试试用另外一个方法调用另外一个变量来解决。" +
             "比如说在模糊判断输出Couldn't find that command! Guess...的时候，用message会导致时间和内容吞并，但是用dsdFileContent附加时间就可以解决。";
-    public static final String[] UpdateInfo = new String[]{version_0_0_1, version_0_0_2, version_0_0_3, version_0_0_3_1, version_pre_0_0_4,
+    public static final Version[] UpdateInfo = new Version[]{version_0_0_1, version_0_0_2, version_0_0_3, version_0_0_3_1, version_pre_0_0_4,
             version_0_0_4,version_0_0_4_1,version_0_0_4_2,version_0_0_4_3,version_0_0_5,version_0_0_5_1,version_0_0_5_2};
     public static void main(String[] args) {
-        System.out.println(version_0_0_5_2);
+
     }
 }

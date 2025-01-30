@@ -19,10 +19,13 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 public class mainFrame {
     public static Logger logger = new Logger();
@@ -98,6 +101,7 @@ public class mainFrame {
         JTextPane jtpCountdown = new JTextPane(dsdCountdown);
         LocalDateTime today = LocalDateTime.now();
         logger.info("Current Date: "+today);
+        logger.info("Current Version:" + UpdateInfo.UpdateInfo[UpdateInfo.UpdateInfo.length-1].getEdition());
         LocalDateTime specificDate = LocalDateTime.of(2025, 6, 7, 0, 0); // 2025年6月7日
         long daysBetween = ChronoUnit.DAYS.between(today, specificDate);
         if (daysBetween>0){
@@ -117,11 +121,15 @@ public class mainFrame {
         if (NotificationFileHandler.notifications.size() != 0) {
             for (int i = 0; i < NotificationFileHandler.notifications.size(); i++) {
                 Notification notification = NotificationFileHandler.notifications.get(i);
-                if (notification.isFinished()) {
+                String endDate = notification.getEndDate();
+                boolean hasEndDate = notification.hasEndDate();
+
+                if ((!hasEndDate) || notification.isFinished())
                     dsdNotification.insertString(dsdNotification.getLength(), "[√]", FontStyle.greenStyle);
-                } else {
+                else if (!notification.isFinished() && !isEndDatePassed(endDate))
                     dsdNotification.insertString(dsdNotification.getLength(), "[×]", FontStyle.darkRedStyle);
-                }
+                else if (!notification.isFinished() && isEndDatePassed(endDate))
+                    dsdNotification.insertString(dsdNotification.getLength(), "[!]", FontStyle.yellowStyle);
                 notification.getContent().append(dsdNotification, dsdNotification.getLength());
                 dsdNotification.insertString(dsdNotification.getLength(), "\n", FontStyle.plainStyle);
             }
@@ -261,6 +269,18 @@ public class mainFrame {
         CommandHeads.formatter(false,new Mixture<>(Arrays.toString(exception.getStackTrace()),FontStyle.darkRedStyle));
         CommandHeads.formatter(false,new Mixture<>("Suppressed: ",FontStyle.plainStyle));
         CommandHeads.formatter(false,new Mixture<>(Arrays.toString(exception.getSuppressed()),FontStyle.darkRedStyle));
+    }
+
+    private static boolean isEndDatePassed(String date) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date nowDate = new Date(System.currentTimeMillis());
+            Date endDate = sdf.parse(date);
+            return nowDate.after(endDate);
+        } catch (ParseException pe) {
+            pe.printStackTrace();
+            return false;
+        }
     }
 
 }

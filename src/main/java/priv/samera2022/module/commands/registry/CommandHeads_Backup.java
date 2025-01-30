@@ -21,7 +21,6 @@ import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Style;
-
 import java.awt.*;
 import java.awt.dnd.DnDConstants;
 import java.awt.event.FocusEvent;
@@ -40,9 +39,8 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import static priv.samera2022.module.mainFrame.*;
-import static priv.samera2022.module.mainFrame.dsdNotification;
 
-public class CommandHeads {
+public class CommandHeads_Backup {
     public static JFrame frame = new JFrame();
     //统一二级菜单：用list不用all
 
@@ -573,7 +571,7 @@ public class CommandHeads {
         String subCommand = FuzzyMatcher.fuzzyMatch(rawSubCommand, Arrays.asList("reload"));
         switch (subCommand) {
             case "reload":
-                priv.samera2022.module.config.ConfigHandler.reload();
+                ConfigHandler.reload();
                 break;
             default:
                 formatter(true, new Mixture<>("尽管这条消息肯定不会出现在控制台上，下面的break也没有实际用途，但是还是写上了。", FontStyle.plainStyle));
